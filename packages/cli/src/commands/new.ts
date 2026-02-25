@@ -3,7 +3,7 @@ import { Command } from 'commander';
 import { execSync } from 'child_process';
 import fs from 'fs';
 import path from 'path';
-import prompts from 'prompts';
+import prompts from 'prompts'; 
 
 const APP_STRUCTURE = [
     'src/controllers',
@@ -33,7 +33,7 @@ const PACKAGE_JSON = (name: string) => JSON.stringify({
         test: "pearl test"
     },
     dependencies: {
-        "@pearljs/core": "^0.1.0"
+        "@pearl/core": "^0.1.0"
     },
     devDependencies: {
         '@types/node': '^20.0.0',

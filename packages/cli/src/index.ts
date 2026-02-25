@@ -5,21 +5,12 @@ import { readFileSync } from 'fs';
 import { join } from 'path';
 import chalk from 'chalk';
 
-import { makeController } from './make.js';
-import { makeEvent } from './make.js';
-import { makeJob } from './make.js';
-import { makeListener } from './make.js';
-import { makeMail } from './make.js';
-import { makeMiddleware } from './make.js';
-import { makeMigration } from './make.js';
-import { makeModel } from './make.js';
-import { makeRequest } from './make.js';
-import { makeResource } from './make.js';
-import { newApp } from './new.js';
-import { serve } from './serve.js';
-import { listCommands } from './list.js';
+import { makeController, makeEvent, makeJob, makeListener, makeMail, makeMiddleware, makeMigration, makeModel, makeRequest, makeResource } from './commands/make.js';
+import { newApp } from './commands/new.js';
+import { serve } from './commands/serve.js';
+import { listCommands } from './commands/list.js';
 
-const pkg = JSON.parse(readFileSync(join(__dirname, '../../package.json'), 'utf-8'));
+const pkg = JSON.parse(readFileSync(join(__dirname, '../package.json'), 'utf-8'));
 
 const program = new Command();
 
