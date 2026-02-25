@@ -1,0 +1,52 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Build output
+dist/
+*.tsbuildinfo
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Test coverage
+coverage/
+
+# Editor
+.vscode/
+.idea/
+*.swp
+.DS_Store
+
+# Turbo cache
+.turbo/
+
+# Logs
+*.log
+npm-debug.log*
+
+
+*.pem
+*.key
+*.crt
+*.pfx
+*.cer
+*.csr
+*.srl
+*.zip
+*.tar.gz
+*.tgz
+*.bak
+*.backup
+*.tmp
+*.cache
+*.pid
+*.seed
+*.log
+*.sql
+*.sqlite
+*.sqlite3
+*.db
+*.db3
