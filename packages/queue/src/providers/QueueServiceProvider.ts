@@ -4,13 +4,13 @@ import { QueueWorker } from '../workers/QueueWorker.js'
 import type { ConnectionOptions } from 'bullmq'
 
 export interface QueueServiceConfig {
-  connection: ConnectionOptions
-  prefix?: string
-  defaultQueue?: string
-  workers?: Array<{
-    queue: string
-    concurrency?: number
-  }>
+    connection: ConnectionOptions
+    prefix?: string
+    defaultQueue?: string
+    workers?: Array<{
+        queue: string
+        concurrency?: number
+    }>
 }
 
 /**
@@ -49,16 +49,16 @@ export class QueueServiceProvider extends ServiceProvider {
         const manager = this.container.make(QueueManager)
 
         for (const workerConfig of this.config.workers) {
-        const worker = new QueueWorker(workerConfig.queue, {
-            connection: this.config.connection,
-            ...(this.config.prefix !== undefined && { prefix: this.config.prefix }),
-            ...(workerConfig.concurrency !== undefined && { concurrency: workerConfig.concurrency }),
-        })
+            const worker = new QueueWorker(workerConfig.queue, {
+                connection: this.config.connection,
+                ...(this.config.prefix !== undefined && { prefix: this.config.prefix }),
+                ...(workerConfig.concurrency !== undefined && { concurrency: workerConfig.concurrency }),
+            })
 
-        this.workers.push(worker)
-        worker.start()
-        // Access queue to ensure it's initialised
-        manager.queue(workerConfig.queue)
+            this.workers.push(worker)
+            worker.start()
+            // Access queue to ensure it's initialised
+            manager.queue(workerConfig.queue)
         }
     }
 
