@@ -1,7 +1,8 @@
 {
-    "name": "@pearl/http",
+    "name": "@pearl/validate",
     "version": "0.1.0",
-    "description": "Pearl.js HTTP kernel — router, middleware pipeline, request/response",
+    "description": "Pearl.js validation — Zod-powered FormRequest, validation pipes, and error formatting",
+    "type": "module",
     "main": "./dist/index.js",
     "types": "./dist/index.d.ts",
     "exports": {
@@ -20,7 +21,8 @@
     },
     "dependencies": {
         "@pearl/core": "workspace:*",
-        "reflect-metadata": "^0.2.2"
+        "@pearl/http": "workspace:*",
+        "zod": "^3.23.0"
     },
     "devDependencies": {
         "@types/node": "^20.0.0",
@@ -34,11 +36,11 @@
     "repository": {
         "type": "git",
         "url": "https://github.com/skd09/pearl.js.git",
-        "directory": "packages/http"
+        "directory": "packages/validate"
     },
     "typesVersions": {
         "*": {
-        "*": ["./dist/index.d.ts"]
+            "*": ["./dist/index.d.ts"]
         }
     }
 }
