@@ -8,10 +8,10 @@ The official CLI for the [Pearl.js](https://github.com/skd09/pearl.js) TypeScrip
 npm install -g @pearl/cli
 ```
 
-Or use it directly with npx:
+Or use directly with npx — no install needed:
 
 ```bash
-npx pearl new my-app
+npx @pearl/cli new my-app
 ```
 
 ## Commands
@@ -19,7 +19,7 @@ npx pearl new my-app
 ### Application
 
 | Command | Description |
-|---|---|
+|---------|-------------|
 | `pearl new <name>` | Scaffold a new Pearl.js application |
 | `pearl serve` | Start the dev server with hot reload |
 | `pearl list` | List all available commands |
@@ -29,10 +29,10 @@ npx pearl new my-app
 All `make:*` commands support `--force` to overwrite existing files.
 
 | Command | Output |
-|---|---|
+|---------|--------|
 | `pearl make:controller <n>` | `src/controllers/<Name>Controller.ts` |
 | `pearl make:model <n>` | `src/models/<Name>.ts` |
-| `pearl make:migration <n>` | `src/database/migrations/<timestamp>_<name>.ts` |
+| `pearl make:migration <n>` | `database/migrations/<timestamp>_<name>.ts` |
 | `pearl make:middleware <n>` | `src/middleware/<Name>Middleware.ts` |
 | `pearl make:job <n>` | `src/jobs/<Name>Job.ts` |
 | `pearl make:mail <n>` | `src/mail/<Name>Mail.ts` |
@@ -44,8 +44,16 @@ All `make:*` commands support `--force` to overwrite existing files.
 ## Examples
 
 ```bash
-# Create a new app
+# Create a new app (auto-detects pnpm/yarn/npm)
 pearl new blog-api
+
+# Create with a specific package manager
+pearl new blog-api --npm
+pearl new blog-api --pnpm
+pearl new blog-api --yarn
+
+# Skip dependency install
+pearl new blog-api --no-install
 
 # Generate a resourceful controller
 pearl make:controller Post --resource
@@ -62,30 +70,40 @@ pearl serve --port 8080
 
 ## Project Structure
 
-After running `pearl new my-app`, you'll get:
+After running `pearl new my-app`:
 
 ```
 my-app/
 ├── src/
+│   ├── server.ts              ← entry point, runs immediately
+│   ├── providers/
+│   │   └── AppServiceProvider.ts
 │   ├── controllers/
 │   ├── models/
-│   ├── middleware/
-│   ├── jobs/
-│   ├── mail/
+│   ├── schema/
+│   ├── requests/
 │   ├── events/
 │   ├── listeners/
-│   ├── requests/
-│   ├── resources/
-│   ├── routes/
-│   │   └── api.ts
-│   ├── database/
-│   │   ├── migrations/
-│   │   └── seeders/
-│   ├── config/
-│   └── main.ts
+│   ├── jobs/
+│   ├── mail/
+│   └── middleware/
+├── database/
+│   └── migrations/
 ├── tests/
-├── .env
+│   └── example.test.ts
+├── .env                       ← ready to configure
 ├── .env.example
-├── package.json
-└── tsconfig.json
+├── package.json               ← all @pearl/* packages included
+├── tsconfig.json
+└── vitest.config.ts
 ```
+
+## What's included
+
+Every new Pearl app comes pre-configured with:
+
+- All `@pearl/*` packages as dependencies
+- TypeScript with ESM + `Bundler` module resolution
+- `tsx` for fast dev server with hot reload (`pnpm dev`)
+- `vitest` for testing (`pnpm test`)
+- `.env` with sensible defaults for Postgres, Redis, JWT, and mail

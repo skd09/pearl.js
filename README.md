@@ -68,8 +68,37 @@ Pearl is layered from the ground up:
 ```bash
 npx @pearl/cli new my-app
 cd my-app
-npm install
 npm run dev
+```
+
+That's it. Pearl auto-detects your package manager (pnpm, yarn, or npm) and scaffolds a full project with all packages, TypeScript config, and a running server.
+
+### What gets created
+
+```
+my-app/
+├── src/
+│   ├── server.ts              ← entry point, ready to run
+│   ├── providers/
+│   │   └── AppServiceProvider.ts
+│   ├── controllers/
+│   ├── models/
+│   ├── schema/
+│   ├── requests/
+│   ├── events/
+│   ├── listeners/
+│   ├── jobs/
+│   ├── mail/
+│   └── middleware/
+├── database/
+│   └── migrations/
+├── tests/
+│   └── example.test.ts
+├── .env                       ← copied from .env.example
+├── .env.example
+├── package.json
+├── tsconfig.json
+└── vitest.config.ts
 ```
 
 ### Manual setup
