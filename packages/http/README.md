@@ -1,11 +1,11 @@
-# @pearljs/http
+# @pearl-framework/http
 
 > Router, middleware pipeline, Request/Response, and decorators for Pearl.js
 
 ## Installation
 
 ```bash
-pnpm add @pearljs/http @pearljs/core
+pnpm add @pearl-framework/http @pearl-framework/core
 ```
 
 ## Usage
@@ -13,7 +13,7 @@ pnpm add @pearljs/http @pearljs/core
 ### Basic routing
 
 ```ts
-import { Router, HttpKernel } from '@pearljs/http'
+import { Router, HttpKernel } from '@pearl-framework/http'
 
 const router = new Router()
 
@@ -47,7 +47,7 @@ router.post('/users', async (ctx) => {
 ### Middleware
 
 ```ts
-import type { HttpContext, NextFn } from '@pearljs/http'
+import type { HttpContext, NextFn } from '@pearl-framework/http'
 
 async function logger(ctx: HttpContext, next: NextFn) {
   console.log(`${ctx.request.method} ${ctx.request.url}`)
@@ -64,7 +64,7 @@ router.get('/admin', adminHandler, [authMiddleware, logger])
 ### Controller decorators
 
 ```ts
-import { Controller, Get, Post } from '@pearljs/http'
+import { Controller, Get, Post } from '@pearl-framework/http'
 
 @Controller('/users')
 export class UserController {

@@ -1,11 +1,11 @@
-# @pearljs/auth
+# @pearl-framework/auth
 
 > JWT and API token authentication guards for Pearl.js
 
 ## Installation
 
 ```bash
-pnpm add @pearljs/auth @pearljs/http jsonwebtoken bcryptjs
+pnpm add @pearl-framework/auth @pearl-framework/http jsonwebtoken bcryptjs
 ```
 
 ## Usage
@@ -13,7 +13,7 @@ pnpm add @pearljs/auth @pearljs/http jsonwebtoken bcryptjs
 ### Implement AuthUser
 
 ```ts
-import type { AuthUser } from '@pearljs/auth'
+import type { AuthUser } from '@pearl-framework/auth'
 
 export class User implements AuthUser {
   constructor(
@@ -30,8 +30,8 @@ export class User implements AuthUser {
 ### Implement UserProvider
 
 ```ts
-import type { UserProvider } from '@pearljs/auth'
-import { Hash } from '@pearljs/auth'
+import type { UserProvider } from '@pearl-framework/auth'
+import { Hash } from '@pearl-framework/auth'
 
 export class DrizzleUserProvider implements UserProvider<User> {
   async findById(id: number | string) {
@@ -66,7 +66,7 @@ router.get('/me', meHandler, [Authenticate(authManager)])
 ### Hash passwords
 
 ```ts
-import { Hash } from '@pearljs/auth'
+import { Hash } from '@pearl-framework/auth'
 
 const hash  = await Hash.make(password)
 const valid = await Hash.check(password, hash)

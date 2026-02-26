@@ -1,11 +1,11 @@
-# @pearljs/queue
+# @pearl-framework/queue
 
 > BullMQ-powered job dispatching and worker management for Pearl.js
 
 ## Installation
 
 ```bash
-pnpm add @pearljs/queue @pearljs/core bullmq ioredis
+pnpm add @pearl-framework/queue @pearl-framework/core bullmq ioredis
 ```
 
 ## Usage
@@ -13,7 +13,7 @@ pnpm add @pearljs/queue @pearljs/core bullmq ioredis
 ### Define a job
 
 ```ts
-import { Job } from '@pearljs/queue'
+import { Job } from '@pearl-framework/queue'
 
 export class SendWelcomeEmail extends Job {
   readonly queue = 'mail'

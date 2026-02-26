@@ -1,5 +1,5 @@
 {
-  "name": "@pearljs/database",
+  "name": "@pearl-framework/database",
   "version": "0.1.0",
   "description": "Pearl.js database — Drizzle ORM integration, migrations, and connection management",
   "main": "./dist/index.js",
@@ -24,7 +24,7 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
-    "@pearljs/core": "workspace:*",
+    "@pearl-framework/core": "workspace:*",
     "drizzle-orm": "^0.30.0",
     "drizzle-kit": "^0.20.0"
   },

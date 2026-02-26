@@ -14,8 +14,8 @@
 Pearl is a batteries-included Node.js framework that brings Laravel's developer experience to TypeScript. It gives you a clean IoC container, expressive routing, validation, queues, mail, auth, and more — all fully typed, all working together out of the box.
 
 ```ts
-import { Application } from '@pearljs/core'
-import { HttpKernel } from '@pearljs/http'
+import { Application } from '@pearl-framework/core'
+import { HttpKernel } from '@pearl-framework/http'
 import { AppServiceProvider } from './providers/AppServiceProvider.js'
 
 const app = new Application()
@@ -32,10 +32,10 @@ console.log('Pearl running on http://localhost:3000')
 
 Pearl is layered from the ground up:
 
-- **@pearljs/core** — foundation. IoC container, Application lifecycle, ServiceProvider base.
-- **@pearljs/http** — sits on core. Router, middleware pipeline, Request/Response primitives.
-- **@pearljs/queue** — sits on core. BullMQ job dispatching and worker management.
-- **@pearljs/validate, @pearljs/events, @pearljs/mail, @pearljs/database, @pearljs/auth** — sit on core and http. Each is independently installable.
+- **@pearl-framework/core** — foundation. IoC container, Application lifecycle, ServiceProvider base.
+- **@pearl-framework/http** — sits on core. Router, middleware pipeline, Request/Response primitives.
+- **@pearl-framework/queue** — sits on core. BullMQ job dispatching and worker management.
+- **@pearl-framework/validate, @pearl-framework/events, @pearl-framework/mail, @pearl-framework/database, @pearl-framework/auth** — sit on core and http. Each is independently installable.
 - **Your App** — registers providers, wires everything together.
 
 ---
@@ -44,16 +44,16 @@ Pearl is layered from the ground up:
 
 | Package | Description | Version |
 |---------|-------------|---------|
-| [`@pearljs/core`](./packages/core) | IoC container, Application lifecycle, ServiceProvider | `0.1.0` |
-| [`@pearljs/http`](./packages/http) | Router, middleware pipeline, Request/Response, decorators | `0.1.0` |
-| [`@pearljs/validate`](./packages/validate) | FormRequest, ValidationPipe, Zod-powered rules | `0.1.0` |
-| [`@pearljs/events`](./packages/events) | Type-safe event dispatcher, Listener base class | `0.1.0` |
-| [`@pearljs/queue`](./packages/queue) | BullMQ-powered jobs, workers, and retry handling | `0.1.0` |
-| [`@pearljs/mail`](./packages/mail) | Mailable classes, SMTP/SES/Log transports | `0.1.0` |
-| [`@pearljs/database`](./packages/database) | Drizzle ORM integration, Model helpers, Migrator | `0.1.0` |
-| [`@pearljs/auth`](./packages/auth) | JWT & API token guards, Hash, Authenticate middleware | `0.1.0` |
-| [`@pearljs/testing`](./packages/testing) | HttpTestClient, MailFake, Factory, DatabaseTestHelper | `0.1.0` |
-| [`@pearljs/cli`](./packages/cli) | `pearl new`, `pearl make:*`, `pearl serve` | `0.1.0` |
+| [`@pearl-framework/core`](./packages/core) | IoC container, Application lifecycle, ServiceProvider | `0.1.0` |
+| [`@pearl-framework/http`](./packages/http) | Router, middleware pipeline, Request/Response, decorators | `0.1.0` |
+| [`@pearl-framework/validate`](./packages/validate) | FormRequest, ValidationPipe, Zod-powered rules | `0.1.0` |
+| [`@pearl-framework/events`](./packages/events) | Type-safe event dispatcher, Listener base class | `0.1.0` |
+| [`@pearl-framework/queue`](./packages/queue) | BullMQ-powered jobs, workers, and retry handling | `0.1.0` |
+| [`@pearl-framework/mail`](./packages/mail) | Mailable classes, SMTP/SES/Log transports | `0.1.0` |
+| [`@pearl-framework/database`](./packages/database) | Drizzle ORM integration, Model helpers, Migrator | `0.1.0` |
+| [`@pearl-framework/auth`](./packages/auth) | JWT & API token guards, Hash, Authenticate middleware | `0.1.0` |
+| [`@pearl-framework/testing`](./packages/testing) | HttpTestClient, MailFake, Factory, DatabaseTestHelper | `0.1.0` |
+| [`@pearl-framework/cli`](./packages/cli) | `pearl new`, `pearl make:*`, `pearl serve` | `0.1.0` |
 
 ---
 
@@ -66,7 +66,7 @@ Pearl is layered from the ground up:
 ### Create a new app
 
 ```bash
-npx @pearljs/cli new my-app
+npx @pearl-framework/cli new my-app
 cd my-app
 npm run dev
 ```
@@ -105,19 +105,19 @@ my-app/
 
 ```bash
 # npm
-npm install @pearljs/core @pearljs/http
+npm install @pearl-framework/core @pearl-framework/http
 
 # pnpm
-pnpm add @pearljs/core @pearljs/http
+pnpm add @pearl-framework/core @pearl-framework/http
 
 # yarn
-yarn add @pearljs/core @pearljs/http
+yarn add @pearl-framework/core @pearl-framework/http
 ```
 
 ```ts
 // bootstrap/app.ts
-import { Application } from '@pearljs/core'
-import { HttpKernel } from '@pearljs/http'
+import { Application } from '@pearl-framework/core'
+import { HttpKernel } from '@pearl-framework/http'
 
 const app = new Application()
 const kernel = new HttpKernel(app)
@@ -131,7 +131,7 @@ await kernel.listen(3000)
 ### Routing
 
 ```ts
-import { Router } from '@pearljs/http'
+import { Router } from '@pearl-framework/http'
 
 const router = new Router()
 
@@ -148,7 +148,7 @@ router.post('/users', async (ctx) => {
 ### Validation
 
 ```ts
-import { FormRequest } from '@pearljs/validate'
+import { FormRequest } from '@pearl-framework/validate'
 import { z } from 'zod'
 
 export class CreateUserRequest extends FormRequest {
@@ -164,7 +164,7 @@ export class CreateUserRequest extends FormRequest {
 ### Authentication
 
 ```ts
-import { JwtGuard, Hash } from '@pearljs/auth'
+import { JwtGuard, Hash } from '@pearl-framework/auth'
 
 const guard = new JwtGuard(userProvider, { secret: process.env.JWT_SECRET! })
 
@@ -178,7 +178,7 @@ router.get('/me', handler, [Authenticate(authManager)])
 ### Events
 
 ```ts
-import { Event, Listener, EventDispatcher } from '@pearljs/events'
+import { Event, Listener, EventDispatcher } from '@pearl-framework/events'
 
 class UserRegistered extends Event {
   constructor(public readonly user: User) { super() }
@@ -198,7 +198,7 @@ await dispatcher.dispatch(new UserRegistered(user))
 ### Queue
 
 ```ts
-import { Job } from '@pearljs/queue'
+import { Job } from '@pearl-framework/queue'
 
 class ProcessPayment extends Job {
   readonly queue = 'payments'
@@ -215,7 +215,7 @@ await queueManager.dispatch(new ProcessPayment(order.id))
 ### Mail
 
 ```ts
-import { Mailable } from '@pearljs/mail'
+import { Mailable } from '@pearl-framework/mail'
 
 class WelcomeEmail extends Mailable {
   constructor(private user: User) { super() }
@@ -234,7 +234,7 @@ await mailer.send(new WelcomeEmail(user))
 ### Database
 
 ```ts
-import { pgTable, serial, varchar, Model } from '@pearljs/database'
+import { pgTable, serial, varchar, Model } from '@pearl-framework/database'
 
 export const users = pgTable('users', {
   id:    serial('id').primaryKey(),
@@ -253,7 +253,7 @@ const all  = await User.all(db)
 ### Testing
 
 ```ts
-import { HttpTestClient, Factory, MailFake } from '@pearljs/testing'
+import { HttpTestClient, Factory, MailFake } from '@pearl-framework/testing'
 
 const client = new HttpTestClient(app.handler)
 
@@ -280,7 +280,7 @@ pnpm install
 pnpm build
 
 # Build a specific package
-pnpm --filter @pearljs/http build
+pnpm --filter @pearl-framework/http build
 
 # Run tests across all packages
 pnpm test

@@ -1,5 +1,5 @@
 {
-  "name": "@pearljs/auth",
+  "name": "@pearl-framework/auth",
   "version": "0.1.0",
   "description": "Pearl.js auth — JWT, session, and API token authentication guards",
   "main": "./dist/index.js",
@@ -24,8 +24,8 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
-    "@pearljs/core": "workspace:*",
-    "@pearljs/http": "workspace:*",
+    "@pearl-framework/core": "workspace:*",
+    "@pearl-framework/http": "workspace:*",
     "jsonwebtoken": "^9.0.0",
     "bcryptjs": "^2.4.3"
   },

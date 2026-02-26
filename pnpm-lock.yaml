@@ -23,10 +23,10 @@ importers:
 
   packages/auth:
     dependencies:
-      '@pearl/core':
+      '@pearl-framework/core':
         specifier: workspace:*
         version: link:../core
-      '@pearl/http':
+      '@pearl-framework/http':
         specifier: workspace:*
         version: link:../http
       bcryptjs:
@@ -94,7 +94,7 @@ importers:
 
   packages/database:
     dependencies:
-      '@pearl/core':
+      '@pearl-framework/core':
         specifier: workspace:*
         version: link:../core
       better-sqlite3:
@@ -131,7 +131,7 @@ importers:
 
   packages/events:
     dependencies:
-      '@pearl/core':
+      '@pearl-framework/core':
         specifier: workspace:*
         version: link:../core
     devDependencies:
@@ -147,7 +147,7 @@ importers:
 
   packages/http:
     dependencies:
-      '@pearl/core':
+      '@pearl-framework/core':
         specifier: workspace:*
         version: link:../core
       reflect-metadata:
@@ -166,7 +166,7 @@ importers:
 
   packages/mail:
     dependencies:
-      '@pearl/core':
+      '@pearl-framework/core':
         specifier: workspace:*
         version: link:../core
       nodemailer:
@@ -188,7 +188,7 @@ importers:
 
   packages/queue:
     dependencies:
-      '@pearl/core':
+      '@pearl-framework/core':
         specifier: workspace:*
         version: link:../core
       bullmq:
@@ -210,10 +210,10 @@ importers:
 
   packages/testing:
     dependencies:
-      '@pearl/core':
+      '@pearl-framework/core':
         specifier: workspace:*
         version: link:../core
-      '@pearl/http':
+      '@pearl-framework/http':
         specifier: workspace:*
         version: link:../http
     devDependencies:
@@ -229,10 +229,10 @@ importers:
 
   packages/validate:
     dependencies:
-      '@pearl/core':
+      '@pearl-framework/core':
         specifier: workspace:*
         version: link:../core
-      '@pearl/http':
+      '@pearl-framework/http':
         specifier: workspace:*
         version: link:../http
       zod:

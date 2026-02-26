@@ -1,4 +1,4 @@
-import { ServiceProvider } from '@pearljs/core'
+import { ServiceProvider } from '@pearl-framework/core'
 import { QueueManager } from '../QueueManager.js'
 import { QueueWorker } from '../workers/QueueWorker.js'
 import type { ConnectionOptions } from 'bullmq'

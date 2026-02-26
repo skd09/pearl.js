@@ -33,19 +33,19 @@ const packageJson = (name: string) => JSON.stringify({
     test:  'vitest run',
   },
   dependencies: {
-    '@pearljs/core':     '^0.1.0',
-    '@pearljs/http':     '^0.1.0',
-    '@pearljs/validate': '^0.1.0',
-    '@pearljs/auth':     '^0.1.0',
-    '@pearljs/database': '^0.1.0',
-    '@pearljs/events':   '^0.1.0',
-    '@pearljs/queue':    '^0.1.0',
-    '@pearljs/mail':     '^0.1.0',
+    '@pearl-framework/core':     '^0.1.0',
+    '@pearl-framework/http':     '^0.1.0',
+    '@pearl-framework/validate': '^0.1.0',
+    '@pearl-framework/auth':     '^0.1.0',
+    '@pearl-framework/database': '^0.1.0',
+    '@pearl-framework/events':   '^0.1.0',
+    '@pearl-framework/queue':    '^0.1.0',
+    '@pearl-framework/mail':     '^0.1.0',
     'drizzle-orm':     '^0.30.0',
     'zod':             '^3.22.0',
   },
   devDependencies: {
-    '@pearljs/testing': '^0.1.0',
+    '@pearl-framework/testing': '^0.1.0',
     '@types/node':    '^20.0.0',
     'tsx':            '^4.7.0',
     'typescript':     '^5.4.0',
@@ -105,8 +105,8 @@ dist/
 .DS_Store
 `
 
-const serverTs = `import { Application } from '@pearljs/core'
-import { Router, HttpKernel } from '@pearljs/http'
+const serverTs = `import { Application } from '@pearl-framework/core'
+import { Router, HttpKernel } from '@pearl-framework/http'
 
 const app = new Application()
 const router = new Router()
@@ -126,7 +126,7 @@ await kernel.listen(port)
 console.log(\`\\n🦪 Pearl running → http://localhost:\${port}\\n\`)
 `
 
-const appProviderTs = `import { ServiceProvider } from '@pearljs/core'
+const appProviderTs = `import { ServiceProvider } from '@pearl-framework/core'
 
 export class AppServiceProvider extends ServiceProvider {
   register(): void {
@@ -151,7 +151,7 @@ export default defineConfig({
 `
 
 const exampleTest = `import { describe, it } from 'vitest'
-import { HttpTestClient } from '@pearljs/testing'
+import { HttpTestClient } from '@pearl-framework/testing'
 
 // Import your app bootstrap here
 // import { createApp } from '../src/app.js'

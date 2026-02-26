@@ -1,11 +1,11 @@
-# @pearljs/validate
+# @pearl-framework/validate
 
 > FormRequest, ValidationPipe, and Zod-powered rules for Pearl.js
 
 ## Installation
 
 ```bash
-pnpm add @pearljs/validate @pearljs/http zod
+pnpm add @pearl-framework/validate @pearl-framework/http zod
 ```
 
 ## Usage
@@ -13,7 +13,7 @@ pnpm add @pearljs/validate @pearljs/http zod
 ### FormRequest
 
 ```ts
-import { FormRequest } from '@pearljs/validate'
+import { FormRequest } from '@pearl-framework/validate'
 import { z } from 'zod'
 
 export class CreateUserRequest extends FormRequest {
@@ -39,7 +39,7 @@ router.post('/users', async (ctx) => {
 ### ValidationPipe (middleware)
 
 ```ts
-import { ValidationPipe } from '@pearljs/validate'
+import { ValidationPipe } from '@pearl-framework/validate'
 
 router.post('/users', createUser, [
   ValidationPipe(CreateUserRequest)
@@ -49,7 +49,7 @@ router.post('/users', createUser, [
 ### Standalone validation
 
 ```ts
-import { validate } from '@pearljs/validate'
+import { validate } from '@pearl-framework/validate'
 import { z } from 'zod'
 
 const schema = z.object({ email: z.string().email() })
@@ -60,7 +60,7 @@ const result = await validate(schema, { email: 'bad' })
 ### Built-in rules
 
 ```ts
-import { rules } from '@pearljs/validate'
+import { rules } from '@pearl-framework/validate'
 
 z.object({
   email:    rules.email(),

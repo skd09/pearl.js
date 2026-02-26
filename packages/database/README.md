@@ -1,11 +1,11 @@
-# @pearljs/database
+# @pearl-framework/database
 
 > Drizzle ORM integration, Model helpers, and migrations for Pearl.js
 
 ## Installation
 
 ```bash
-pnpm add @pearljs/database drizzle-orm
+pnpm add @pearl-framework/database drizzle-orm
 pnpm add -D drizzle-kit
 
 # Add your driver
@@ -19,7 +19,7 @@ pnpm add better-sqlite3  # SQLite
 ### Define a schema
 
 ```ts
-import { pgTable, serial, varchar, timestamp } from '@pearljs/database'
+import { pgTable, serial, varchar, timestamp } from '@pearl-framework/database'
 
 export const users = pgTable('users', {
   id:        serial('id').primaryKey(),
@@ -32,7 +32,7 @@ export const users = pgTable('users', {
 ### Define a model
 
 ```ts
-import { Model } from '@pearljs/database'
+import { Model } from '@pearl-framework/database'
 
 export class User extends Model<typeof users> {
   static table = users

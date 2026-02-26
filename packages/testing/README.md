@@ -1,11 +1,11 @@
-# @pearljs/testing
+# @pearl-framework/testing
 
 > HTTP test client, mail fakes, data factories, and test helpers for Pearl.js
 
 ## Installation
 
 ```bash
-pnpm add -D @pearljs/testing vitest
+pnpm add -D @pearl-framework/testing vitest
 ```
 
 ## Usage
@@ -13,7 +13,7 @@ pnpm add -D @pearljs/testing vitest
 ### HTTP testing
 
 ```ts
-import { HttpTestClient } from '@pearljs/testing'
+import { HttpTestClient } from '@pearl-framework/testing'
 
 const client = new HttpTestClient(app.handler)
 
@@ -51,7 +51,7 @@ it('validates required fields', async () => {
 ### Mail fake
 
 ```ts
-import { MailFake } from '@pearljs/testing'
+import { MailFake } from '@pearl-framework/testing'
 
 const mailFake = new MailFake()
 // inject into container...
@@ -66,7 +66,7 @@ mailFake.assertSent('Welcome to Pearl!')
 ### Data factories
 
 ```ts
-import { Factory } from '@pearljs/testing'
+import { Factory } from '@pearl-framework/testing'
 
 const userFactory = new Factory(() => ({
   name:  'Test User',
@@ -83,7 +83,7 @@ const admins = userFactory.state({ role: 'admin' }).makeMany(3)
 ### Database helper
 
 ```ts
-import { DatabaseTestHelper } from '@pearljs/testing'
+import { DatabaseTestHelper } from '@pearl-framework/testing'
 
 const dbHelper = new DatabaseTestHelper(db)
 

@@ -1,4 +1,4 @@
-import { ServiceProvider } from '@pearljs/core'
+import { ServiceProvider } from '@pearl-framework/core'
 import { HttpKernel } from '../HttpKernel.js'
 import { Router } from '../routing/Router.js'
 

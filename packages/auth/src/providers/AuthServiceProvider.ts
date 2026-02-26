@@ -1,4 +1,4 @@
-import { ServiceProvider } from '@pearljs/core'
+import { ServiceProvider } from '@pearl-framework/core'
 import { AuthManager } from '../AuthManager.js'
 import { JwtGuard, type JwtConfig } from '../guards/JwtGuard.js'
 import type { UserProvider, AuthUser } from '../contracts/index.js'

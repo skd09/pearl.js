@@ -1,17 +1,17 @@
-# @pearljs/cli
+# @pearl-framework/cli
 
 The official CLI for the [Pearl.js](https://github.com/skd09/pearl.js) TypeScript framework.
 
 ## Installation
 
 ```bash
-npm install -g @pearljs/cli
+npm install -g @pearl-framework/cli
 ```
 
 Or use directly with npx — no install needed:
 
 ```bash
-npx @pearljs/cli new my-app
+npx @pearl-framework/cli new my-app
 ```
 
 ## Commands
@@ -93,7 +93,7 @@ my-app/
 │   └── example.test.ts
 ├── .env                       ← ready to configure
 ├── .env.example
-├── package.json               ← all @pearljs/* packages included
+├── package.json               ← all @pearl-framework/* packages included
 ├── tsconfig.json
 └── vitest.config.ts
 ```
@@ -102,7 +102,7 @@ my-app/
 
 Every new Pearl app comes pre-configured with:
 
-- All `@pearljs/*` packages as dependencies
+- All `@pearl-framework/*` packages as dependencies
 - TypeScript with ESM + `Bundler` module resolution
 - `tsx` for fast dev server with hot reload (`pnpm dev`)
 - `vitest` for testing (`pnpm test`)

@@ -1,11 +1,11 @@
-# @pearljs/mail
+# @pearl-framework/mail
 
 > Mailable classes and multi-transport email sending for Pearl.js
 
 ## Installation
 
 ```bash
-pnpm add @pearljs/mail @pearljs/core nodemailer
+pnpm add @pearl-framework/mail @pearl-framework/core nodemailer
 ```
 
 ## Usage
@@ -13,7 +13,7 @@ pnpm add @pearljs/mail @pearljs/core nodemailer
 ### Define a mailable
 
 ```ts
-import { Mailable } from '@pearljs/mail'
+import { Mailable } from '@pearl-framework/mail'
 
 export class WelcomeEmail extends Mailable {
   constructor(private readonly user: User) { super() }

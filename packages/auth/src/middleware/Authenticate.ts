@@ -1,4 +1,4 @@
-import type { HttpContext, NextFn } from '@pearljs/http'
+import type { HttpContext, NextFn } from '@pearl-framework/http'
 import type { AuthManager } from '../AuthManager.js'
 
 export interface AuthMiddlewareOptions {

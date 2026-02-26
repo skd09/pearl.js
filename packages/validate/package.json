@@ -1,5 +1,5 @@
 {
-    "name": "@pearljs/validate",
+    "name": "@pearl-framework/validate",
     "version": "0.1.0",
     "description": "Pearl.js validation — Zod-powered FormRequest, validation pipes, and error formatting",
     "type": "module",
@@ -20,8 +20,8 @@
         "clean": "rm -rf dist"
     },
     "dependencies": {
-        "@pearljs/core": "workspace:*",
-        "@pearljs/http": "workspace:*",
+        "@pearl-framework/core": "workspace:*",
+        "@pearl-framework/http": "workspace:*",
         "zod": "^3.23.0"
     },
     "devDependencies": {

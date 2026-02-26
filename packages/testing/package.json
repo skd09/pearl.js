@@ -1,5 +1,5 @@
 {
-  "name": "@pearljs/testing",
+  "name": "@pearl-framework/testing",
   "version": "0.1.0",
   "description": "Pearl.js testing — HTTP test client, database helpers, mail fakes, and test utilities",
   "main": "./dist/index.js",
@@ -24,8 +24,8 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
-    "@pearljs/core": "workspace:*",
-    "@pearljs/http": "workspace:*"
+    "@pearl-framework/core": "workspace:*",
+    "@pearl-framework/http": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "^20.0.0",

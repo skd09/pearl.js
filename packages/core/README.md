@@ -1,16 +1,16 @@
-# @pearljs/core
+# @pearl-framework/core
 
 > IoC container, Application lifecycle, and ServiceProvider base for Pearl.js
 
 ## Installation
 
 ```bash
-pnpm add @pearljs/core
+pnpm add @pearl-framework/core
 ```
 
 ## Overview
 
-`@pearljs/core` is the foundation of every Pearl app. It provides:
+`@pearl-framework/core` is the foundation of every Pearl app. It provides:
 
 - **IoC Container** — type-safe dependency injection with singleton and transient bindings
 - **Application** — bootstraps your app, registers providers, manages lifecycle
@@ -22,7 +22,7 @@ pnpm add @pearljs/core
 ### Application bootstrap
 
 ```ts
-import { Application } from '@pearljs/core'
+import { Application } from '@pearl-framework/core'
 
 const app = new Application()
 
@@ -49,7 +49,7 @@ const mailer = app.container.make(Mailer)
 ### ServiceProvider
 
 ```ts
-import { ServiceProvider } from '@pearljs/core'
+import { ServiceProvider } from '@pearl-framework/core'
 
 export class AppServiceProvider extends ServiceProvider {
   register(): void {
@@ -68,7 +68,7 @@ export class AppServiceProvider extends ServiceProvider {
 ### Config
 
 ```ts
-import { Config } from '@pearljs/core'
+import { Config } from '@pearl-framework/core'
 
 const config = new Config({
   app: { name: 'Pearl', debug: false },

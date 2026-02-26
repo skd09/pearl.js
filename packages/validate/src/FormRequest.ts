@@ -1,5 +1,5 @@
 import type { ZodTypeAny, infer as ZodInfer } from 'zod'
-import type { HttpContext } from '@pearljs/http'
+import type { HttpContext } from '@pearl-framework/http'
 import { ValidationException } from './ValidationException.js'
 
 export abstract class FormRequest<TSchema extends ZodTypeAny = ZodTypeAny> {
