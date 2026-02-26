@@ -1,5 +1,6 @@
 packages:
   - packages/*
+  - 'templates/app'
 
 ignoredBuiltDependencies:
   - better-sqlite3
