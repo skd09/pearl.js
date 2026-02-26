@@ -30,23 +30,13 @@ console.log('Pearl running on http://localhost:3000')
 
 ## Architecture
 
-```
-┌─────────────────────────────────────────────────────────────┐
-│                        Your App                             │
-├──────────┬──────────┬──────────┬──────────┬────────────────┤
-│  @pearl/ │  @pearl/ │  @pearl/ │  @pearl/ │    @pearl/     │
-│   auth   │ validate │  events  │   mail   │    database    │
-├──────────┴──────────┴──────────┴──────────┴────────────────┤
-│                   @pearl/http                               │
-│         Router · Pipeline · Request · Response              │
-├─────────────────────────────────────────────────────────────┤
-│                   @pearl/queue                              │
-│              BullMQ · Jobs · Workers                        │
-├─────────────────────────────────────────────────────────────┤
-│                   @pearl/core                               │
-│         IoC Container · Application · ServiceProvider       │
-└─────────────────────────────────────────────────────────────┘
-```
+Pearl is layered from the ground up:
+
+- **@pearl/core** — foundation. IoC container, Application lifecycle, ServiceProvider base.
+- **@pearl/http** — sits on core. Router, middleware pipeline, Request/Response primitives.
+- **@pearl/queue** — sits on core. BullMQ job dispatching and worker management.
+- **@pearl/validate, @pearl/events, @pearl/mail, @pearl/database, @pearl/auth** — sit on core and http. Each is independently installable.
+- **Your App** — registers providers, wires everything together.
 
 ---
 
