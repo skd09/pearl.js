@@ -62,21 +62,27 @@ Pearl is layered from the ground up:
 ### Requirements
 
 - Node.js 20+
-- pnpm 9+
 
 ### Create a new app
 
 ```bash
 npx @pearl/cli new my-app
 cd my-app
-pnpm install
-pnpm dev
+npm install
+npm run dev
 ```
 
 ### Manual setup
 
 ```bash
+# npm
+npm install @pearl/core @pearl/http
+
+# pnpm
 pnpm add @pearl/core @pearl/http
+
+# yarn
+yarn add @pearl/core @pearl/http
 ```
 
 ```ts
@@ -232,7 +238,12 @@ it('creates a user', async () => {
 
 ## Monorepo Development
 
+> **Note:** Contributing to Pearl requires pnpm. End users can install published packages with npm, pnpm, or yarn.
+
 ```bash
+# Install pnpm if you don't have it
+npm install -g pnpm
+
 # Install all dependencies
 pnpm install
 
@@ -260,6 +271,7 @@ We welcome contributions! Please read [CONTRIBUTING.md](CONTRIBUTING.md) for gui
 ```bash
 git clone https://github.com/skd09/pearl.js.git
 cd pearl.js
+npm install -g pnpm  # contributors need pnpm for the monorepo
 pnpm install
 pnpm build
 ```
