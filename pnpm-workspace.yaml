@@ -1,0 +1,9 @@
+packages:
+  - packages/*
+  - 'templates/app'
+
+ignoredBuiltDependencies:
+  - better-sqlite3
+  - es5-ext
+  - esbuild
+  - msgpackr-extract
