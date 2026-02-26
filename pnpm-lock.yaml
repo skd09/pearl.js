@@ -205,6 +205,25 @@ importers:
         specifier: ^1.6.0
         version: 1.6.1(@types/node@20.19.33)
 
+  packages/testing:
+    dependencies:
+      '@pearl/core':
+        specifier: workspace:*
+        version: link:../core
+      '@pearl/http':
+        specifier: workspace:*
+        version: link:../http
+    devDependencies:
+      '@types/node':
+        specifier: ^20.0.0
+        version: 20.19.33
+      typescript:
+        specifier: ^5.4.0
+        version: 5.9.3
+      vitest:
+        specifier: ^1.6.0
+        version: 1.6.1(@types/node@20.19.33)
+
   packages/validate:
     dependencies:
       '@pearl/core':
