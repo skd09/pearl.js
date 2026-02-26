@@ -1,4 +1,5 @@
 import { resolve } from 'node:path'
+import { fileURLToPath } from 'node:url'
 import { Container } from './container/Container.js'
 import type { IContainer } from './container/contracts.js'
 import { Config, loadDotenv } from './Config.js'
@@ -6,24 +7,39 @@ import { ServiceProvider } from './ServiceProvider.js'
 import { ProviderBootError } from './errors.js'
 
 export interface ApplicationOptions {
-  root: string
+  root?: string
   configPath?: string
 }
 
 type ProviderConstructor = new (container: IContainer) => ServiceProvider
+
+function defaultRoot(): string {
+  // Walk up from this file to find a sensible default root
+  try {
+    return fileURLToPath(new URL('../../..', import.meta.url))
+  } catch {
+    return process.cwd()
+  }
+}
 
 export class Application {
   readonly container: IContainer
   readonly config: Config
   private readonly providers: ServiceProvider[] = []
   private booted = false
+  private readonly options: Required<ApplicationOptions>
 
-  constructor(private readonly options: ApplicationOptions) {
+  constructor(options: ApplicationOptions = {}) {
+    this.options = {
+      root:       options.root       ?? process.cwd(),
+      configPath: options.configPath ?? resolve(options.root ?? process.cwd(), 'config'),
+    }
+
     this.container = new Container()
-    this.config = new Config(options.configPath ?? resolve(options.root, 'config'))
+    this.config = new Config(this.options.configPath)
     this.container.instance(Application, this)
     this.container.instance(Config, this.config)
-    this.container.instance<string>('app.root', options.root)
+    this.container.instance<string>('app.root', this.options.root)
   }
 
   register(...providerClasses: ProviderConstructor[]): this {

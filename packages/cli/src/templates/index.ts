@@ -1,178 +1,179 @@
 export const templates = {
-  controller: (name: string, resourceful: boolean) => `import { Controller, Get${resourceful ? ', Post, Put, Delete' : ''} } from '@pearl/core';
-import { Request, Response } from '@pearl/core';
 
-@Controller('/${name.toLowerCase()}s')
+  controller: (name: string, resourceful: boolean) => `import type { HttpContext } from '@pearl/http'
+
 export class ${name}Controller {
-  @Get('/')
-  async index(req: Request, res: Response): Promise<void> {
-    res.json({ data: [] });
+  async index(ctx: HttpContext): Promise<void> {
+    ctx.response.json({ data: [] })
   }
 
-  @Get('/:id')
-  async show(req: Request, res: Response): Promise<void> {
-    const { id } = req.params;
-    res.json({ data: { id } });
+  async show(ctx: HttpContext): Promise<void> {
+    const id = ctx.request.param('id')
+    ctx.response.json({ data: { id } })
   }
 ${resourceful ? `
-  @Post('/')
-  async store(req: Request, res: Response): Promise<void> {
-    res.status(201).json({ data: req.body });
+  async store(ctx: HttpContext): Promise<void> {
+    const body = ctx.request.body()
+    ctx.response.created({ data: body })
   }
 
-  @Put('/:id')
-  async update(req: Request, res: Response): Promise<void> {
-    const { id } = req.params;
-    res.json({ data: { id, ...req.body } });
+  async update(ctx: HttpContext): Promise<void> {
+    const id = ctx.request.param('id')
+    const body = ctx.request.body()
+    ctx.response.json({ data: { id, ...body } })
   }
 
-  @Delete('/:id')
-  async destroy(req: Request, res: Response): Promise<void> {
-    const { id } = req.params;
-    res.status(204).json({ message: \`${name} \${id} deleted\` });
+  async destroy(ctx: HttpContext): Promise<void> {
+    ctx.response.noContent()
   }
-` : ''}
-}
+` : ''}}
 `,
 
-  model: (name: string, tableName: string) => `import { Model, Column, PrimaryKey, CreatedAt, UpdatedAt } from '@pearl/core';
+  model: (name: string, tableName: string) => `import { pgTable, serial, varchar, timestamp } from '@pearl/database'
+import { Model } from '@pearl/database'
 
-@Model({ table: '${tableName}' })
-export class ${name} {
-  @PrimaryKey()
-  id!: number;
-
+export const ${tableName} = pgTable('${tableName}', {
+  id:        serial('id').primaryKey(),
   // TODO: define your columns
-  // @Column()
-  // name!: string;
+  // name:   varchar('name', { length: 255 }).notNull(),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+})
 
-  @CreatedAt()
-  createdAt!: Date;
+export type ${name}Record = typeof ${tableName}.$inferSelect
 
-  @UpdatedAt()
-  updatedAt!: Date;
-}
-`,
+export class ${name} extends Model<typeof ${tableName}> {
+  static table = ${tableName}
 
-  migration: (name: string, tableName: string) => `import { Migration, Schema, Blueprint } from '@pearl/core';
+  id: number
+  createdAt: Date
 
-export default class ${name} extends Migration {
-  async up(schema: Schema): Promise<void> {
-    await schema.create('${tableName}', (table: Blueprint) => {
-      table.id();
-      // TODO: define your columns
-      // table.string('name');
-      table.timestamps();
-    });
-  }
-
-  async down(schema: Schema): Promise<void> {
-    await schema.dropIfExists('${tableName}');
+  constructor(record: ${name}Record) {
+    super()
+    this.id        = record.id
+    this.createdAt = record.createdAt
   }
 }
 `,
 
-  middleware: (name: string) => `import { Middleware, Request, Response, NextFunction } from '@pearl/core';
+  migration: (name: string, tableName: string) => `-- Migration: ${name}
+-- Created: ${new Date().toISOString()}
 
-@Middleware()
-export class ${name}Middleware {
-  async handle(req: Request, res: Response, next: NextFunction): Promise<void> {
-    // TODO: implement middleware logic
-    next();
-  }
+CREATE TABLE IF NOT EXISTS ${tableName} (
+  id         SERIAL PRIMARY KEY,
+  -- TODO: define your columns
+  -- name    VARCHAR(255) NOT NULL,
+  created_at TIMESTAMP NOT NULL DEFAULT NOW()
+);
+
+-- Rollback:
+-- DROP TABLE IF EXISTS ${tableName};
+`,
+
+  middleware: (name: string) => `import type { HttpContext, NextFn } from '@pearl/http'
+
+export async function ${name}Middleware(ctx: HttpContext, next: NextFn): Promise<void> {
+  // TODO: implement middleware logic
+  await next()
 }
 `,
 
-  job: (name: string) => `import { Job } from '@pearl/core';
+  job: (name: string) => `import { Job } from '@pearl/queue'
 
-export interface ${name}Payload {
-  // TODO: define your job payload
-}
+export class ${name}Job extends Job {
+  readonly queue = 'default'
+  get tries() { return 3 }
 
-export class ${name}Job extends Job<${name}Payload> {
-  static readonly queue = 'default';
+  constructor(
+    // TODO: define job payload
+    // public readonly userId: number,
+  ) { super() }
 
-  async handle(payload: ${name}Payload): Promise<void> {
+  async handle(): Promise<void> {
     // TODO: implement job logic
-    console.log('Handling ${name}Job', payload);
+    console.log('[Job] Handling ${name}Job')
   }
 
-  async failed(payload: ${name}Payload, error: Error): Promise<void> {
-    console.error('${name}Job failed', error.message, payload);
+  async failed(error: Error): Promise<void> {
+    console.error('[Job] ${name}Job failed:', error.message)
   }
 }
 `,
 
-  mail: (name: string) => `import { Mailable } from '@pearl/core';
+  mail: (name: string) => `import { Mailable } from '@pearl/mail'
 
-export interface ${name}Data {
-  // TODO: define mail data
-  to: string;
-}
+export class ${name}Mail extends Mailable {
+  constructor(
+    private readonly to: string,
+    // TODO: add more constructor params
+  ) { super() }
 
-export class ${name}Mail extends Mailable<${name}Data> {
-  subject = '${name}';
-  view = 'emails.${name.toLowerCase()}';
-
-  async build(data: ${name}Data): Promise<this> {
+  build(): this {
     return this
-      .to(data.to)
-      .subject(this.subject);
+      .to(this.to)
+      .subject('${name}')
+      .html(\`<p>TODO: write your email content</p>\`)
+      .text('TODO: write your email content')
   }
 }
 `,
 
-  event: (name: string) => `import { Event } from '@pearl/core';
+  event: (name: string) => `import { Event } from '@pearl/events'
 
-export interface ${name}Payload {
-  // TODO: define event payload
-}
-
-export class ${name}Event extends Event<${name}Payload> {
-  constructor(public readonly payload: ${name}Payload) {
-    super();
-  }
+export class ${name}Event extends Event {
+  constructor(
+    // TODO: define event payload
+    // public readonly userId: number,
+  ) { super() }
 }
 `,
 
-  listener: (name: string, eventName: string) => `import { Listener } from '@pearl/core';
-import { ${eventName}Event } from '../events/${eventName}Event';
+  listener: (name: string, eventName: string) => `import { Listener } from '@pearl/events'
+import type { ${eventName}Event } from '../events/${eventName}Event.js'
 
 export class ${name}Listener extends Listener<${eventName}Event> {
   async handle(event: ${eventName}Event): Promise<void> {
     // TODO: handle the ${eventName} event
-    console.log('Handling ${eventName}', event.payload);
+    console.log('Handling ${eventName}:', event)
   }
 }
 `,
 
-  request: (name: string) => `import { FormRequest } from '@pearl/core';
-import { z } from 'zod';
+  request: (name: string) => `import { FormRequest } from '@pearl/validate'
+import { z } from 'zod'
 
 export class ${name}Request extends FormRequest {
   schema = z.object({
     // TODO: define validation rules
-    // name: z.string().min(1).max(255),
+    // name:  z.string().min(1).max(255),
     // email: z.string().email(),
-  });
+  })
 
-  authorize(): boolean {
-    return true; // TODO: add authorization logic
+  async authorize(): Promise<boolean> {
+    return true // TODO: add authorization logic
   }
 }
 `,
 
-  resource: (name: string) => `import { ApiResource } from '@pearl/core';
+  resource: (name: string) => `export class ${name}Resource {
+  constructor(private readonly data: Record<string, unknown>) {}
 
-export class ${name}Resource extends ApiResource {
-  toArray(): Record<string, unknown> {
+  toJSON(): Record<string, unknown> {
     return {
-      id: this.resource.id,
+      id:        this.data['id'],
       // TODO: map your resource fields
-      // name: this.resource.name,
-      createdAt: this.resource.createdAt,
-    };
+      // name:   this.data['name'],
+      createdAt: this.data['createdAt'],
+    }
+  }
+
+  static from(data: Record<string, unknown>): ${name}Resource {
+    return new ${name}Resource(data)
+  }
+
+  static collection(items: Record<string, unknown>[]): ${name}Resource[] {
+    return items.map((item) => new ${name}Resource(item))
   }
 }
 `,
-};
+
+}

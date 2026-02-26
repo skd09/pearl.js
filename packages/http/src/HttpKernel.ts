@@ -6,28 +6,40 @@ import { Pipeline } from './routing/Pipeline.js'
 import { Router } from './routing/Router.js'
 
 export interface KernelOptions {
+    router?: Router
     port?: number
     host?: string
 }
 
 export class HttpKernel {
     private readonly server: Server
-    private router: Router = new Router()
+    private _router: Router
 
-    constructor() {
-        this.server = createServer(async (rawReq, rawRes) => {
-        await this.handleRequest(rawReq, rawRes)
+    constructor(options: KernelOptions = {}) {
+            this._router = options.router ?? new Router()
+            this.server = createServer(async (rawReq, rawRes) => {
+            await this.handleRequest(rawReq, rawRes)
         })
     }
 
-    // ─── Router ──────────────────────────────────────────────────────────────
+    // ─── Router ───────────────────────────────────────────────────────────────
 
     useRouter(router: Router): this {
-        this.router = router
+        this._router = router
         return this
     }
 
-    // ─── Server lifecycle ────────────────────────────────────────────────────
+    get router(): Router {
+        return this._router
+    }
+
+    // ─── Handler (for testing) ────────────────────────────────────────────────
+
+    get handler() {
+        return this.handleRequest.bind(this)
+    }
+
+    // ─── Server lifecycle ─────────────────────────────────────────────────────
 
     listen(port = 3000, host = 'localhost', callback?: () => void): this {
         this.server.listen(port, host, callback)
@@ -40,34 +52,34 @@ export class HttpKernel {
         })
     }
 
-    // ─── Request handling ────────────────────────────────────────────────────
+    // ─── Request handling ─────────────────────────────────────────────────────
 
     private async handleRequest(
         rawReq: import('node:http').IncomingMessage,
         rawRes: import('node:http').ServerResponse,
     ): Promise<void> {
-        const req = await Request.fromIncoming(rawReq as import('node:http').IncomingMessage)
-        const res = new Response(rawRes as import('node:http').ServerResponse)
+        const req = await Request.fromIncoming(rawReq)
+        const res = new Response(rawRes)
         const ctx = new HttpContext(req, res)
 
         try {
-        const match = this.router.match(req.method, req.path)
+            const match = this._router.match(req.method, req.path)
 
-        if (!match) {
-            res.notFound(`Cannot ${req.method} ${req.path}`)
-            return
-        }
+            if (!match) {
+                res.notFound(`Cannot ${req.method} ${req.path}`)
+                return
+            }
 
-        req.setParams(match.params)
+            req.setParams(match.params)
 
-        const middleware = [
-            ...this.router.globalMiddlewares,
-            ...match.route.middleware,
-        ]
+            const middleware = [
+                ...this._router.globalMiddlewares,
+                ...match.route.middleware,
+            ]
 
-        await new Pipeline(ctx)
-            .through(middleware)
-            .run(async (ctx: HttpContext) => {
+            await new Pipeline(ctx)
+                .through(middleware)
+                .run(async (ctx: HttpContext) => {
                 await match.route.handler(ctx)
             })
         } catch (error) {
