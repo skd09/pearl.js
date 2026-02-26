@@ -61,7 +61,6 @@ const tsconfig = JSON.stringify({
     lib:                    ['ES2022'],
     outDir:                 './dist',
     rootDir:                './src',
-    strict:                 true,
     declaration:            true,
     experimentalDecorators: true,
     emitDecoratorMetadata:  true,

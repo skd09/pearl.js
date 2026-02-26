@@ -249,6 +249,55 @@ importers:
         specifier: ^1.6.0
         version: 1.6.1(@types/node@20.19.33)
 
+  templates/app:
+    dependencies:
+      '@pearl-framework/auth':
+        specifier: ^0.1.0
+        version: 0.1.0
+      '@pearl-framework/core':
+        specifier: ^0.1.0
+        version: 0.1.0
+      '@pearl-framework/database':
+        specifier: ^0.1.0
+        version: 0.1.0(@types/better-sqlite3@7.6.13)(@types/pg@8.16.0)(better-sqlite3@9.6.0)(mysql2@3.18.1(@types/node@20.19.33))(pg@8.19.0)
+      '@pearl-framework/events':
+        specifier: ^0.1.0
+        version: 0.1.0
+      '@pearl-framework/http':
+        specifier: ^0.1.0
+        version: 0.1.0
+      '@pearl-framework/mail':
+        specifier: ^0.1.0
+        version: 0.1.0
+      '@pearl-framework/queue':
+        specifier: ^0.1.0
+        version: 0.1.0
+      '@pearl-framework/validate':
+        specifier: ^0.1.0
+        version: 0.1.0
+      drizzle-orm:
+        specifier: ^0.30.0
+        version: 0.30.10(@types/better-sqlite3@7.6.13)(@types/pg@8.16.0)(better-sqlite3@9.6.0)(mysql2@3.18.1(@types/node@20.19.33))(pg@8.19.0)
+      zod:
+        specifier: ^3.22.0
+        version: 3.25.76
+    devDependencies:
+      '@pearl-framework/testing':
+        specifier: ^0.1.0
+        version: 0.1.0(vitest@1.6.1(@types/node@20.19.33))
+      '@types/node':
+        specifier: ^20.0.0
+        version: 20.19.33
+      tsx:
+        specifier: ^4.7.0
+        version: 4.21.0
+      typescript:
+        specifier: ^5.4.0
+        version: 5.9.3
+      vitest:
+        specifier: ^1.6.0
+        version: 1.6.1(@types/node@20.19.33)
+
 packages:
 
   '@esbuild-kit/core-utils@3.3.2':
@@ -874,6 +923,46 @@ packages:
     resolution: {integrity: sha512-x0fWaQtYp4E6sktbsdAqnehxDgEc/VwM7uLsRCYWaiGu0ykYdZPiS8zCWdnjHwyiumousxfBm4SO31eXqwEZhQ==}
     cpu: [x64]
     os: [win32]
+
+  '@pearl-framework/auth@0.1.0':
+    resolution: {integrity: sha512-OhvcT4PnesyMZ4F2MeWYj2Lkm3Vmgaa91jkqWkMJEZ24aAD48PAIx1UutUMQ2so7d2yY1IFP0dG9C3yX2t8jDA==}
+
+  '@pearl-framework/core@0.1.0':
+    resolution: {integrity: sha512-rfpI4UcMuWLTqyDOQSxXUSrq2rONdN5hMnaAD+Z+blm0X5Y6GeKIPi59saneSgNOC9LpSoG1A88Lqbl2yq4iuQ==}
+
+  '@pearl-framework/database@0.1.0':
+    resolution: {integrity: sha512-pxj/hN+GAyMsS9UfGkod8od5UxOSoBI76jxVeCRHOMM7krCfRl3cwSvmFeCmeMPSWG9foK0rkT7DB0+VRRCImA==}
+    peerDependencies:
+      better-sqlite3: ^9.4.0
+      mysql2: ^3.9.0
+      pg: ^8.11.0
+    peerDependenciesMeta:
+      better-sqlite3:
+        optional: true
+      mysql2:
+        optional: true
+      pg:
+        optional: true
+
+  '@pearl-framework/events@0.1.0':
+    resolution: {integrity: sha512-bOiDmr5hEIEAVmgsjqUJIH31kVOwFfGgdF1xVlREzCaDa9YWvfYAhkcxzOHYlryvVt9BNq8oSInVulzDm7ObRQ==}
+
+  '@pearl-framework/http@0.1.0':
+    resolution: {integrity: sha512-SIDLG0f+Q3GL4jOzEU6c5QdOZdzSyd+24MXJeO0K6PZxRXeDOd701vmCygeq8gG1YAC0tULHz8RaOkqlcqckUQ==}
+
+  '@pearl-framework/mail@0.1.0':
+    resolution: {integrity: sha512-035KzrtICXRT5wiMZYdDlHL28sMywDSWO0zl+e3ESF0nBU/jtr0iHd0kI5KhgTDRQAlJMavboAX4Q3mDdvRQtw==}
+
+  '@pearl-framework/queue@0.1.0':
+    resolution: {integrity: sha512-8vUKKCFcWxfTN8FCa7q07Wh+KiGm3fO4Q+gbqqSxJQ25ZPsA+fNXonFLEfXSduXM4+Egp8g3vHa5JHa9fCRXLQ==}
+
+  '@pearl-framework/testing@0.1.0':
+    resolution: {integrity: sha512-s1Fymc8t4QrYZUb31C/OIP0RP0xW/CP2mqrDia8ZWbRMYwl6Nhw8P/LKorE3/dbAMdEAIRbenvs0dbiQLcdDMQ==}
+    peerDependencies:
+      vitest: ^1.6.0
+
+  '@pearl-framework/validate@0.1.0':
+    resolution: {integrity: sha512-pIwZ5uFrJTeuKjgxdy+ym/aeJSRUYT8ef+BDBhITSdWNzgHWcqKVZxNBcNr704Wwb7w/IF5ypD+BlQlkuQP11g==}
 
   '@rollup/rollup-android-arm-eabi@4.59.0':
     resolution: {integrity: sha512-upnNBkA6ZH2VKGcBj9Fyl9IGNPULcjXRlg0LLeaioQWueH30p6IXtJEbKAgvyv+mJaMxSm1l6xwDXYjpEMiLMg==}
@@ -2393,6 +2482,83 @@ snapshots:
 
   '@msgpackr-extract/msgpackr-extract-win32-x64@3.0.3':
     optional: true
+
+  '@pearl-framework/auth@0.1.0':
+    dependencies:
+      '@pearl-framework/core': 0.1.0
+      '@pearl-framework/http': 0.1.0
+      bcryptjs: 2.4.3
+      jsonwebtoken: 9.0.3
+
+  '@pearl-framework/core@0.1.0': {}
+
+  '@pearl-framework/database@0.1.0(@types/better-sqlite3@7.6.13)(@types/pg@8.16.0)(better-sqlite3@9.6.0)(mysql2@3.18.1(@types/node@20.19.33))(pg@8.19.0)':
+    dependencies:
+      '@pearl-framework/core': 0.1.0
+      drizzle-kit: 0.20.18
+      drizzle-orm: 0.30.10(@types/better-sqlite3@7.6.13)(@types/pg@8.16.0)(better-sqlite3@9.6.0)(mysql2@3.18.1(@types/node@20.19.33))(pg@8.19.0)
+    optionalDependencies:
+      better-sqlite3: 9.6.0
+      mysql2: 3.18.1(@types/node@20.19.33)
+      pg: 8.19.0
+    transitivePeerDependencies:
+      - '@aws-sdk/client-rds-data'
+      - '@cloudflare/workers-types'
+      - '@electric-sql/pglite'
+      - '@libsql/client'
+      - '@neondatabase/serverless'
+      - '@op-engineering/op-sqlite'
+      - '@opentelemetry/api'
+      - '@planetscale/database'
+      - '@types/better-sqlite3'
+      - '@types/pg'
+      - '@types/react'
+      - '@types/sql.js'
+      - '@vercel/postgres'
+      - '@xata.io/client'
+      - bun-types
+      - expo-sqlite
+      - knex
+      - kysely
+      - postgres
+      - react
+      - sql.js
+      - sqlite3
+      - supports-color
+
+  '@pearl-framework/events@0.1.0':
+    dependencies:
+      '@pearl-framework/core': 0.1.0
+
+  '@pearl-framework/http@0.1.0':
+    dependencies:
+      '@pearl-framework/core': 0.1.0
+      reflect-metadata: 0.2.2
+
+  '@pearl-framework/mail@0.1.0':
+    dependencies:
+      '@pearl-framework/core': 0.1.0
+      nodemailer: 6.10.1
+
+  '@pearl-framework/queue@0.1.0':
+    dependencies:
+      '@pearl-framework/core': 0.1.0
+      bullmq: 5.70.1
+      ioredis: 5.9.3
+    transitivePeerDependencies:
+      - supports-color
+
+  '@pearl-framework/testing@0.1.0(vitest@1.6.1(@types/node@20.19.33))':
+    dependencies:
+      '@pearl-framework/core': 0.1.0
+      '@pearl-framework/http': 0.1.0
+      vitest: 1.6.1(@types/node@20.19.33)
+
+  '@pearl-framework/validate@0.1.0':
+    dependencies:
+      '@pearl-framework/core': 0.1.0
+      '@pearl-framework/http': 0.1.0
+      zod: 3.25.76
 
   '@rollup/rollup-android-arm-eabi@4.59.0':
     optional: true
