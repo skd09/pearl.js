@@ -1,6 +1,6 @@
 /**
  * Re-export Drizzle's schema builders and operators.
- * Users import from @pearl/database instead of drizzle-orm directly.
+ * Users import from @pearljs/database instead of drizzle-orm directly.
  */
 
 // Schema builders

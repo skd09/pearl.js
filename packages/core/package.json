@@ -1,5 +1,5 @@
 {
-  "name": "@pearl/core",
+  "name": "@pearljs/core",
   "version": "0.1.0",
   "description": "Pearl.js core — IoC container, application kernel, service providers",
   "type": "module",

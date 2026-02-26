@@ -1,5 +1,5 @@
 {
-  "name": "@pearl/mail",
+  "name": "@pearljs/mail",
   "version": "0.1.0",
   "description": "Pearl.js mail — Nodemailer-powered mailable classes, transports, and queue support",
   "main": "./dist/index.js",
@@ -24,7 +24,7 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
-    "@pearl/core": "workspace:*",
+    "@pearljs/core": "workspace:*",
     "nodemailer": "^6.9.0"
   },
   "devDependencies": {

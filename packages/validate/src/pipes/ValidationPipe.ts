@@ -1,4 +1,4 @@
-import type { HttpContext, NextFn } from '@pearl/http'
+import type { HttpContext, NextFn } from '@pearljs/http'
 import type { FormRequest } from '../FormRequest.js'
 import { ValidationException } from '../ValidationException.js'
 

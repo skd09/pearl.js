@@ -1,5 +1,5 @@
 {
-    "name": "@pearl/http",
+    "name": "@pearljs/http",
     "version": "0.1.0",
     "description": "Pearl.js HTTP kernel — router, middleware pipeline, request/response",
     "main": "./dist/index.js",
@@ -19,7 +19,7 @@
         "clean": "rm -rf dist"
     },
     "dependencies": {
-        "@pearl/core": "workspace:*",
+        "@pearljs/core": "workspace:*",
         "reflect-metadata": "^0.2.2"
     },
     "devDependencies": {

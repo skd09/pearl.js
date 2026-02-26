@@ -1,4 +1,4 @@
-import { ServiceProvider } from '@pearl/core'
+import { ServiceProvider } from '@pearljs/core'
 import { Mailer } from '../Mailer.js'
 import {
     SmtpTransport,

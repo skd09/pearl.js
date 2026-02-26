@@ -1,5 +1,5 @@
 {
-    "name": "@pearl/events",
+    "name": "@pearljs/events",
     "version": "0.1.0",
     "description": "Pearl.js events — type-safe event dispatcher, listeners, and queued events",
     "main": "./dist/index.js",
@@ -24,7 +24,7 @@
         "clean": "rm -rf dist"
     },
     "dependencies": {
-        "@pearl/core": "workspace:*"
+        "@pearljs/core": "workspace:*"
     },
     "devDependencies": {
         "@types/node": "^20.0.0",

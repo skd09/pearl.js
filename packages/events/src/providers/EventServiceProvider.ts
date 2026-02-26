@@ -1,4 +1,4 @@
-import { ServiceProvider } from '@pearl/core'
+import { ServiceProvider } from '@pearljs/core'
 import { EventDispatcher } from '../EventDispatcher.js'
 import type { Event } from '../events/Event.js'
 import type { Listener } from '../listeners/Listener.js'

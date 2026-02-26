@@ -1,4 +1,4 @@
-import { PearlError } from '@pearl/core'
+import { PearlError } from '@pearljs/core'
 import type { ZodError } from 'zod'
 
 export type ValidationErrors = Record<string, string[]>

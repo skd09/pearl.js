@@ -1,5 +1,5 @@
-import { ServiceProvider } from '@pearl/core'
-import type { HttpContext, NextFn } from '@pearl/http'
+import { ServiceProvider } from '@pearljs/core'
+import type { HttpContext, NextFn } from '@pearljs/http'
 import { ValidationException } from './ValidationException.js'
 
 /**

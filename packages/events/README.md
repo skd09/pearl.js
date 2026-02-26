@@ -1,11 +1,11 @@
-# @pearl/events
+# @pearljs/events
 
 > Type-safe event dispatcher and listener system for Pearl.js
 
 ## Installation
 
 ```bash
-pnpm add @pearl/events @pearl/core
+pnpm add @pearljs/events @pearljs/core
 ```
 
 ## Usage
@@ -13,7 +13,7 @@ pnpm add @pearl/events @pearl/core
 ### Define events and listeners
 
 ```ts
-import { Event, Listener } from '@pearl/events'
+import { Event, Listener } from '@pearljs/events'
 
 export class UserRegistered extends Event {
   constructor(public readonly user: User) { super() }
@@ -34,7 +34,7 @@ export class SendWelcomeEmail extends Listener<UserRegistered> {
 ### Dispatch events
 
 ```ts
-import { EventDispatcher } from '@pearl/events'
+import { EventDispatcher } from '@pearljs/events'
 
 const dispatcher = new EventDispatcher()
 dispatcher.on(UserRegistered, SendWelcomeEmail)
@@ -46,7 +46,7 @@ dispatcher.dispatchSync(new UserRegistered(user)) // fire and forget
 ### EventServiceProvider
 
 ```ts
-import { EventServiceProvider } from '@pearl/events'
+import { EventServiceProvider } from '@pearljs/events'
 
 export class AppEventServiceProvider extends EventServiceProvider {
   protected listen = new Map([

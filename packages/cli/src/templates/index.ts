@@ -1,6 +1,6 @@
 export const templates = {
 
-  controller: (name: string, resourceful: boolean) => `import type { HttpContext } from '@pearl/http'
+  controller: (name: string, resourceful: boolean) => `import type { HttpContext } from '@pearljs/http'
 
 export class ${name}Controller {
   async index(ctx: HttpContext): Promise<void> {
@@ -29,8 +29,8 @@ ${resourceful ? `
 ` : ''}}
 `,
 
-  model: (name: string, tableName: string) => `import { pgTable, serial, varchar, timestamp } from '@pearl/database'
-import { Model } from '@pearl/database'
+  model: (name: string, tableName: string) => `import { pgTable, serial, varchar, timestamp } from '@pearljs/database'
+import { Model } from '@pearljs/database'
 
 export const ${tableName} = pgTable('${tableName}', {
   id:        serial('id').primaryKey(),
@@ -69,7 +69,7 @@ CREATE TABLE IF NOT EXISTS ${tableName} (
 -- DROP TABLE IF EXISTS ${tableName};
 `,
 
-  middleware: (name: string) => `import type { HttpContext, NextFn } from '@pearl/http'
+  middleware: (name: string) => `import type { HttpContext, NextFn } from '@pearljs/http'
 
 export async function ${name}Middleware(ctx: HttpContext, next: NextFn): Promise<void> {
   // TODO: implement middleware logic
@@ -77,7 +77,7 @@ export async function ${name}Middleware(ctx: HttpContext, next: NextFn): Promise
 }
 `,
 
-  job: (name: string) => `import { Job } from '@pearl/queue'
+  job: (name: string) => `import { Job } from '@pearljs/queue'
 
 export class ${name}Job extends Job {
   readonly queue = 'default'
@@ -99,7 +99,7 @@ export class ${name}Job extends Job {
 }
 `,
 
-  mail: (name: string) => `import { Mailable } from '@pearl/mail'
+  mail: (name: string) => `import { Mailable } from '@pearljs/mail'
 
 export class ${name}Mail extends Mailable {
   constructor(
@@ -117,7 +117,7 @@ export class ${name}Mail extends Mailable {
 }
 `,
 
-  event: (name: string) => `import { Event } from '@pearl/events'
+  event: (name: string) => `import { Event } from '@pearljs/events'
 
 export class ${name}Event extends Event {
   constructor(
@@ -127,7 +127,7 @@ export class ${name}Event extends Event {
 }
 `,
 
-  listener: (name: string, eventName: string) => `import { Listener } from '@pearl/events'
+  listener: (name: string, eventName: string) => `import { Listener } from '@pearljs/events'
 import type { ${eventName}Event } from '../events/${eventName}Event.js'
 
 export class ${name}Listener extends Listener<${eventName}Event> {
@@ -138,7 +138,7 @@ export class ${name}Listener extends Listener<${eventName}Event> {
 }
 `,
 
-  request: (name: string) => `import { FormRequest } from '@pearl/validate'
+  request: (name: string) => `import { FormRequest } from '@pearljs/validate'
 import { z } from 'zod'
 
 export class ${name}Request extends FormRequest {

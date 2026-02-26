@@ -1,5 +1,5 @@
 {
-  "name": "@pearl/queue",
+  "name": "@pearljs/queue",
   "version": "0.1.0",
   "description": "Pearl.js queue — BullMQ-powered job dispatching, workers, and retries",
   "main": "./dist/index.js",
@@ -24,7 +24,7 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
-    "@pearl/core": "workspace:*",
+    "@pearljs/core": "workspace:*",
     "bullmq": "^5.0.0",
     "ioredis": "^5.3.0"
   },

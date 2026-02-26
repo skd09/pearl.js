@@ -1,4 +1,4 @@
-import { ServiceProvider } from '@pearl/core'
+import { ServiceProvider } from '@pearljs/core'
 import { DatabaseManager } from '../DatabaseManager.js'
 import { Migrator } from '../migrations/Migrator.js'
 import type { DatabaseConfig } from '../config.js'
