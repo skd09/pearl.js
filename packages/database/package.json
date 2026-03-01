@@ -1,6 +1,6 @@
 {
   "name": "@pearl-framework/database",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Pearl.js database — Drizzle ORM integration, migrations, and connection management",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -25,8 +25,7 @@
   },
   "dependencies": {
     "@pearl-framework/core": "workspace:*",
-    "drizzle-orm": "^0.30.0",
-    "drizzle-kit": "^0.20.0"
+    "drizzle-orm": "^0.30.0"
   },
   "peerDependencies": {
     "pg": "^8.11.0",
@@ -43,7 +42,8 @@
     "@types/pg": "^8.11.0",
     "@types/better-sqlite3": "^7.6.0",
     "typescript": "^5.4.0",
-    "vitest": "^1.6.0"
+    "vitest": "^1.6.0",
+    "drizzle-kit": "^0.20.0"
   },
   "publishConfig": {
     "access": "public",

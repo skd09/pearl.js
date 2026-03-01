@@ -100,9 +100,6 @@ importers:
       better-sqlite3:
         specifier: ^9.4.0
         version: 9.6.0
-      drizzle-kit:
-        specifier: ^0.20.0
-        version: 0.20.18
       drizzle-orm:
         specifier: ^0.30.0
         version: 0.30.10(@types/better-sqlite3@7.6.13)(@types/pg@8.16.0)(better-sqlite3@9.6.0)(mysql2@3.18.1(@types/node@20.19.33))(pg@8.19.0)
@@ -122,6 +119,9 @@ importers:
       '@types/pg':
         specifier: ^8.11.0
         version: 8.16.0
+      drizzle-kit:
+        specifier: ^0.20.0
+        version: 0.20.18
       typescript:
         specifier: ^5.4.0
         version: 5.9.3
