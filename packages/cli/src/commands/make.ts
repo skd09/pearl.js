@@ -84,7 +84,7 @@ export function makeMigration(program: Command): void {
             const tableName = options.create ?? options.table ?? toSnakeCase(className);
             const timestamp = new Date().toISOString().replace(/[-T:.Z]/g, '').slice(0, 14);
             const fileName = `${timestamp}_${toSnakeCase(name)}`;
-            const filePath = resolveAppPath('src', 'database', 'migrations', `${fileName}.ts`);
+            const filePath = resolveAppPath('src', 'database', 'migrations', `${fileName}.sql`);
 
             console.log(`\n${chalk.bold('pearl make:migration')} ${chalk.cyan(className)}\n`);
             safeWrite(filePath, templates.migration(className, tableName), options.force);

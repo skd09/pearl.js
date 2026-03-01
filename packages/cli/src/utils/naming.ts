@@ -46,10 +46,13 @@ export function toSnakeCase(name: string): string {
 
 /**
  * Strips common suffixes for clean base naming.
+ * Case-sensitive to avoid stripping partial matches.
  * e.g. "UserController" → "User"
+ *      "WelcomeEmail"   → "WelcomeEmail"  (not stripped — ends with 'Email' not 'Mail')
+ *      "WelcomeMail"    → "Welcome"        (stripped — ends with 'Mail')
  */
 export function stripSuffix(name: string, suffix: string): string {
-    if (name.toLowerCase().endsWith(suffix.toLowerCase())) {
+    if (name.endsWith(suffix)) {
         return name.slice(0, -suffix.length)
     }
     return name

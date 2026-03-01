@@ -109,7 +109,7 @@ export class ${name}Mail extends Mailable {
 
   build(): this {
     return this
-      .to(this.to)
+      .sendTo(this.to)
       .subject('${name}')
       .html(\`<p>TODO: write your email content</p>\`)
       .text('TODO: write your email content')

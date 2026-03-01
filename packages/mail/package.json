@@ -1,6 +1,6 @@
 {
   "name": "@pearl-framework/mail",
-  "version": "0.1.0",
+  "version": "0.1.2",
   "description": "Pearl.js mail — Nodemailer-powered mailable classes, transports, and queue support",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
