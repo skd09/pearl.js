@@ -1,42 +1,65 @@
 <div align="center">
-  <h1>Pearl.js</h1>
-  <p>A modern, TypeScript-first web framework for Node.js — inspired by Laravel, built for the ecosystem.</p>
 
-  [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-  [![TypeScript](https://img.shields.io/badge/TypeScript-5.4-blue?logo=typescript)](https://www.typescriptlang.org/)
-  [![npm](https://img.shields.io/badge/npm-@pearl--framework-red?logo=npm)](https://www.npmjs.com/org/pearl-framework)
-  [![pnpm](https://img.shields.io/badge/pnpm-monorepo-orange?logo=pnpm)](https://pnpm.io/)
+<img src="https://pearljs.dev/favicon.svg" width="64" height="64" alt="Pearl.js" />
+
+# Pearl.js
+
+**The TypeScript backend framework that does it right.**
+
+Routing · JWT Auth · Drizzle ORM · Validation · Queues · Events · Mail — all wired together. One install.
+
+[![npm version](https://img.shields.io/npm/v/@pearl-framework/pearl?color=60a5fa&labelColor=111118&style=flat-square)](https://www.npmjs.com/package/@pearl-framework/pearl)
+[![CI](https://img.shields.io/github/actions/workflow/status/skd09/pearl.js/ci.yml?branch=main&label=CI&style=flat-square&labelColor=111118&color=4ade80)](https://github.com/skd09/pearl.js/actions/workflows/ci.yml)
+[![license](https://img.shields.io/npm/l/@pearl-framework/pearl?color=4ade80&labelColor=111118&style=flat-square)](./LICENSE)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.4%2B-60a5fa?labelColor=111118&style=flat-square)](https://www.typescriptlang.org/)
+[![Node.js](https://img.shields.io/badge/Node.js-18%2B-4ade80?labelColor=111118&style=flat-square)](https://nodejs.org/)
+
+[Docs](https://pearljs.dev/docs/getting-started) · [npm](https://www.npmjs.com/package/@pearl-framework/pearl) · [GitHub](https://github.com/skd09/pearl.js)
+
 </div>
 
 ---
 
 ## What is Pearl?
 
-Pearl is a batteries-included Node.js framework that brings Laravel's developer experience to TypeScript. It gives you a clean IoC container, expressive routing, validation, queues, mail, auth, and more — all fully typed, all working together out of the box.
+Pearl is a batteries-included Node.js framework built on TypeScript-first principles. Stop hunting for compatible libraries and wiring them together — Pearl ships everything you need for a production API out of the box.
 
-```ts
-import { Application, Router, HttpKernel } from '@pearl-framework/pearl'
+```typescript
+import { Application, HttpKernel, Router } from '@pearl-framework/pearl'
+import { AuthManager, Authenticate } from '@pearl-framework/pearl'
+import { AppServiceProvider } from './providers/AppServiceProvider.js'
 
+const app = new Application({ root: import.meta.dirname })
+app.register(AppServiceProvider)
+await app.boot()  // loads .env + boots all providers
+
+const auth   = app.container.make(AuthManager)
 const router = new Router()
 
-router.get('/', (ctx) => {
-  ctx.response.json({ message: 'Welcome to Pearl 🦪' })
-})
+router.get('/health', ctx => ctx.json({ status: 'ok' }))
 
-const kernel = new HttpKernel()
-kernel.useRouter(router)
-await kernel.listen(3000)
+router.get('/me', ctx => ctx.json(ctx.user()),
+  [Authenticate(auth)]
+)
+
+await new HttpKernel().useRouter(router).listen(3000)
 ```
 
----
+## Features
 
-## Getting Started
+| | |
+|---|---|
+| 🔀 **Routing** | Express-inspired router with typed params, middleware chains, and response helpers |
+| 🔐 **Authentication** | JWT guard with pluggable user providers — register, login, protect routes in minutes |
+| 🗃️ **Database** | Drizzle ORM wrapped in a `DatabaseManager` — Postgres, MySQL, SQLite |
+| ✅ **Validation** | Zod-powered `FormRequest` classes — validate and type your request bodies cleanly |
+| 📬 **Mail** | `Mailable` classes with SMTP and log transports |
+| 📣 **Events** | Typed, synchronous event dispatcher — decouple your services |
+| 🏗️ **Queues** | BullMQ-backed job queue — dispatch background jobs with delay and retry |
+| 💉 **IoC Container** | Lightweight service container — bind, singleton, make |
+| 🛠️ **CLI** | Scaffold projects and generate controllers, middleware, jobs, and more |
 
-### Requirements
-
-- Node.js 20+
-
-### Create a new app
+## Quick Start
 
 ```bash
 npx @pearl-framework/cli new my-app
@@ -44,289 +67,132 @@ cd my-app
 npm run dev
 ```
 
-That's it. Pearl auto-detects your package manager (pnpm, yarn, or npm), scaffolds a full project, and starts a running server.
+Your server is running at `http://localhost:3000`.
 
-### What gets created
+### Manual install
+
+```bash
+npm install @pearl-framework/pearl drizzle-orm zod dotenv
+```
+
+## Requirements
+
+- **Node.js** v18 or higher
+- **TypeScript** v5.4 or higher
+- **PostgreSQL**, MySQL, or SQLite *(database features)*
+- **Redis** *(queue features)*
+
+## Project Structure
 
 ```
 my-app/
-├── src/
-│   ├── server.ts              ← entry point, ready to run
-│   ├── app.ts                 ← bootstrap: db, auth, queue, events, routes
-│   ├── controllers/
-│   ├── models/
-│   ├── schema/
-│   ├── requests/
-│   ├── events/
-│   ├── listeners/
-│   ├── jobs/
-│   ├── mail/
-│   ├── middleware/
-│   └── providers/
+├── config/
 ├── database/
 │   └── migrations/
-├── tests/
-│   └── app.test.ts
+├── src/
+│   ├── controllers/
+│   ├── events/
+│   ├── jobs/
+│   ├── listeners/
+│   ├── mail/
+│   ├── middleware/
+│   ├── models/
+│   ├── providers/
+│   │   └── AppServiceProvider.ts
+│   ├── requests/
+│   └── main.ts          ← entry point
 ├── .env
-├── .env.example
-├── package.json
-├── tsconfig.json
-└── vitest.config.ts
+└── package.json
 ```
-
-### Manual setup
-
-```bash
-npm install @pearl-framework/pearl
-```
-
-```ts
-import { Application, Router, HttpKernel } from '@pearl-framework/pearl'
-
-const router = new Router()
-router.get('/', (ctx) => ctx.response.json({ message: 'Hello!' }))
-
-const kernel = new HttpKernel()
-kernel.useRouter(router)
-await kernel.listen(3000)
-```
-
----
-
-## Architecture
-
-Pearl is split into focused packages that are published independently but consumed as one:
-
-```
-@pearl-framework/pearl        ← meta package — install this
-  ├── @pearl-framework/core       foundation: IoC container, Application, ServiceProvider
-  ├── @pearl-framework/http       routing, middleware, Request/Response
-  ├── @pearl-framework/validate   FormRequest, Zod-powered validation
-  ├── @pearl-framework/auth       JWT guards, Hash, Authenticate middleware
-  ├── @pearl-framework/events     type-safe event dispatcher
-  ├── @pearl-framework/queue      BullMQ jobs and workers
-  ├── @pearl-framework/mail       Mailable classes, SMTP/SES/Log transports
-  └── @pearl-framework/database   Drizzle ORM, Model helpers
-```
-
----
 
 ## Packages
 
-| Package | Description | Version |
-|---------|-------------|---------|
-| [`@pearl-framework/pearl`](./packages/pearl) | Meta package — includes everything | `0.1.0` |
-| [`@pearl-framework/core`](./packages/core) | IoC container, Application lifecycle, ServiceProvider | `0.1.0` |
-| [`@pearl-framework/http`](./packages/http) | Router, middleware pipeline, Request/Response | `0.1.0` |
-| [`@pearl-framework/validate`](./packages/validate) | FormRequest, ValidationPipe, Zod-powered rules | `0.1.0` |
-| [`@pearl-framework/events`](./packages/events) | Type-safe event dispatcher, Listener base class | `0.1.0` |
-| [`@pearl-framework/queue`](./packages/queue) | BullMQ-powered jobs, workers, and retry handling | `0.1.0` |
-| [`@pearl-framework/mail`](./packages/mail) | Mailable classes, SMTP/SES/Log transports | `0.1.0` |
-| [`@pearl-framework/database`](./packages/database) | Drizzle ORM integration, Model helpers | `0.1.0` |
-| [`@pearl-framework/auth`](./packages/auth) | JWT & API token guards, Hash, Authenticate middleware | `0.1.0` |
-| [`@pearl-framework/testing`](./packages/testing) | HttpTestClient, MailFake, Factory, DatabaseTestHelper | `0.1.0` |
-| [`@pearl-framework/cli`](./packages/cli) | `pearl new`, `pearl make:*`, `pearl serve` | `0.1.0` |
+Pearl is published as a monorepo. Each package can be used independently or via the meta-package.
 
----
+| Package | Description |
+|---|---|
+| `@pearl-framework/pearl` | Meta-package — installs everything |
+| `@pearl-framework/core` | Application, IoC container, service providers |
+| `@pearl-framework/http` | Router, HttpKernel, HttpContext |
+| `@pearl-framework/auth` | JWT guard, Authenticate middleware, Hash |
+| `@pearl-framework/database` | DatabaseManager, Drizzle ORM integration |
+| `@pearl-framework/validate` | FormRequest, Zod schema validation |
+| `@pearl-framework/events` | EventDispatcher, typed events and listeners |
+| `@pearl-framework/queue` | QueueManager, BullMQ job dispatch |
+| `@pearl-framework/mail` | Mailer, Mailable, SMTP/Log transports |
+| `@pearl-framework/cli` | `pearl` CLI — new, serve, make:* generators |
 
-## Quick Examples
-
-### Routing
-
-```ts
-import { Router } from '@pearl-framework/pearl'
-
-const router = new Router()
-
-router.get('/users', async (ctx) => {
-  ctx.response.json({ users: [] })
-})
-
-router.post('/users', async (ctx) => {
-  const body = ctx.request.body<{ name: string }>()
-  ctx.response.created({ id: 1, ...body })
-})
-
-router.group('/api', (r) => {
-  r.get('/health', (ctx) => ctx.response.json({ status: 'ok' }))
-})
-```
-
-### Validation
-
-```ts
-import { FormRequest } from '@pearl-framework/pearl'
-import { z } from 'zod'
-
-export class CreateUserRequest extends FormRequest {
-  schema = z.object({
-    name:  z.string().min(2),
-    email: z.string().email(),
-  })
-  async authorize() { return true }
-}
-
-// In your handler
-const data = await CreateUserRequest.validate(ctx)
-const { name, email } = data
-```
-
-### Authentication
-
-```ts
-import { JwtGuard, Hash, Authenticate } from '@pearl-framework/pearl'
-
-const guard = new JwtGuard(userProvider, { secret: process.env.JWT_SECRET! })
-
-const token = await guard.attempt(email, password)
-
-router.get('/me', meHandler, [Authenticate(authManager)])
-```
-
-### Events
-
-```ts
-import { Event, Listener, EventDispatcher } from '@pearl-framework/pearl'
-
-class UserRegistered extends Event {
-  constructor(public readonly user: User) { super() }
-}
-
-class SendWelcomeEmail extends Listener<UserRegistered> {
-  async handle(event: UserRegistered) {
-    await mailer.send(new WelcomeEmail(event.user))
-  }
-}
-
-const dispatcher = new EventDispatcher()
-dispatcher.on(UserRegistered, () => new SendWelcomeEmail())
-await dispatcher.dispatch(new UserRegistered(user))
-```
-
-### Queue
-
-```ts
-import { Job, QueueManager } from '@pearl-framework/pearl'
-
-class ProcessPayment extends Job {
-  readonly queue = 'payments'
-  constructor(public readonly orderId: number) { super() }
-  async handle() { /* process payment */ }
-}
-
-await queue.dispatch(new ProcessPayment(order.id))
-```
-
-### Mail
-
-```ts
-import { Mailable } from '@pearl-framework/pearl'
-
-class WelcomeEmail extends Mailable {
-  constructor(private readonly recipient: string, private readonly name: string) { super() }
-
-  build() {
-    return this
-      .to(this.recipient)
-      .subject('Welcome!')
-      .html(`<h1>Hi ${this.name}!</h1>`)
-  }
-}
-
-await mailer.send(new WelcomeEmail(user.email, user.name))
-```
-
-### Database
-
-```ts
-import { pgTable, serial, varchar, Model } from '@pearl-framework/pearl'
-
-export const users = pgTable('users', {
-  id:    serial('id').primaryKey(),
-  name:  varchar('name', { length: 255 }).notNull(),
-  email: varchar('email', { length: 255 }).notNull().unique(),
-})
-
-export class User extends Model<typeof users> {
-  static table = users
-}
-```
-
-### Testing
-
-```ts
-import { HttpTestClient, Factory } from '@pearl-framework/testing'
-
-const client = new HttpTestClient(app.kernel.handler)
-
-it('creates a user', async () => {
-  const res = await client.post('/users', { name: 'Sharvari', email: 'hi@pearl.dev' })
-  res.assertCreated().assertJson({ name: 'Sharvari' })
-})
-```
-
----
-
-## Monorepo Development
-
-> **Note:** Contributing to Pearl requires pnpm. End users can install with npm, pnpm, or yarn.
+## CLI
 
 ```bash
-# Clone
-git clone https://github.com/skd09/pearl.js.git
-cd pearl.js
-npm install -g pnpm
+# Scaffold a new project
+npx @pearl-framework/cli new my-app
 
-# Install all dependencies
-pnpm install
+# Start the dev server
+pearl serve
 
-# Build all packages
-pnpm build
-
-# Build a specific package
-pnpm --filter @pearl-framework/http build
-
-# Run tests
-pnpm test
-
-# Watch mode
-pnpm dev
+# Generators
+pearl make:controller  PostController
+pearl make:middleware  RequireAdmin
+pearl make:request     CreatePostRequest
+pearl make:job         SendWelcomeEmail
+pearl make:event       UserRegistered
+pearl make:listener    SendWelcomeListener
+pearl make:mailable    WelcomeMail
+pearl make:migration   create_posts_table
 ```
 
----
+## Example — full auth flow
+
+```typescript
+// src/controllers/AuthController.ts
+import { HttpContext } from '@pearl-framework/pearl'
+import { AuthManager } from '@pearl-framework/pearl'
+import { Hash } from '@pearl-framework/pearl'
+import { db } from '../providers/AppServiceProvider.js'
+import { users } from '../models/schema.js'
+import { eq } from 'drizzle-orm'
+
+export class AuthController {
+  constructor(private auth: AuthManager) {}
+
+  async register(ctx: HttpContext) {
+    const { name, email, password } = await ctx.request.json()
+    const [user] = await db.insert(users).values({
+      name, email, password: await Hash.make(password),
+    }).returning()
+    const token = await this.auth.attempt(email, password)
+    ctx.json({ user, token })
+  }
+
+  async login(ctx: HttpContext) {
+    const { email, password } = await ctx.request.json()
+    const token = await this.auth.attempt(email, password)
+    if (!token) return ctx.status(401).json({ message: 'Invalid credentials' })
+    ctx.json({ token })
+  }
+
+  async me(ctx: HttpContext) {
+    ctx.json(ctx.user())
+  }
+}
+```
 
 ## Contributing
 
-We welcome contributions! Please read [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
+Pull requests are welcome. For major changes please open an issue first.
 
-### Branch conventions
-
-| Branch | Purpose |
-|--------|---------|
-| `main` | Stable releases |
-| `dev` | Active development |
-| `feat/*` | Feature branches |
-| `fix/*` | Bug fixes |
-
-### Commit conventions
-
-Pearl uses [Conventional Commits](https://www.conventionalcommits.org/):
-
-```
-feat(http): add response streaming support
-fix(validate): correct error message for nested fields
-docs(readme): update getting started guide
+```bash
+git clone https://github.com/skd09/pearl.js
+cd pearl.js
+npm install
+npm run build
 ```
 
-### Pull Request process
+## Author
 
-1. Fork the repo and create your branch from `dev`
-2. Make your changes with tests
-3. Ensure `pnpm build` and `pnpm test` pass
-4. Open a PR targeting `dev`
-
----
+Built by [Sharvari Desai](https://github.com/skd09) · [@thecoderbuddy](https://twitter.com/thecoderbuddy)
 
 ## License
 
-MIT © [Sharvari](https://github.com/skd09)
+MIT
