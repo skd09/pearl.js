@@ -17,20 +17,26 @@
     "prepare": "pnpm run build"
   },
   "dependencies": {
-    "@pearl-framework/auth":     "workspace:*",
-    "@pearl-framework/core":     "workspace:*",
+    "@pearl-framework/auth": "workspace:*",
+    "@pearl-framework/core": "workspace:*",
     "@pearl-framework/database": "workspace:*",
-    "@pearl-framework/events":   "workspace:*",
-    "@pearl-framework/http":     "workspace:*",
-    "@pearl-framework/mail":     "workspace:*",
-    "@pearl-framework/queue":    "workspace:*",
-    "@pearl-framework/validate": "workspace:*"
+    "@pearl-framework/events": "workspace:*",
+    "@pearl-framework/http": "workspace:*",
+    "@pearl-framework/mail": "workspace:*",
+    "@pearl-framework/queue": "workspace:*",
+    "@pearl-framework/validate": "workspace:*",
+    "drizzle-orm": "^0.45.1"
   },
   "devDependencies": {
     "@types/node": "^20.0.0",
-    "typescript":  "^5.4.0"
+    "typescript": "^5.4.0"
   },
-  "keywords": ["pearl", "framework", "typescript", "nodejs"],
+  "keywords": [
+    "pearl",
+    "framework",
+    "typescript",
+    "nodejs"
+  ],
   "license": "MIT",
   "publishConfig": {
     "access": "public"

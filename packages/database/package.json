@@ -1,7 +1,8 @@
 {
   "name": "@pearl-framework/database",
-  "version": "0.1.1",
-  "description": "Pearl.js database — Drizzle ORM integration, migrations, and connection management",
+  "version": "0.1.8",
+  "type": "module",
+  "description": "Pearl.js — The TypeScript framework that does it right.",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {
@@ -11,10 +12,34 @@
       "default": "./dist/index.js"
     }
   },
-  "typesVersions": {
-    "*": {
-      "*": ["./dist/index.d.ts"]
+  "dependencies": {
+    "@pearl-framework/core": "workspace:*",
+    "pg": "^8.11.0"
+  },
+  "peerDependencies": {
+    "better-sqlite3": "^9.4.0",
+    "drizzle-orm": "^0.30.0 || ^0.45.0",
+    "mysql2": "^3.9.0"
+  },
+  "peerDependenciesMeta": {
+    "pg": {
+      "optional": true
+    },
+    "mysql2": {
+      "optional": true
+    },
+    "better-sqlite3": {
+      "optional": true
     }
+  },
+  "devDependencies": {
+    "@types/better-sqlite3": "^7.6.0",
+    "@types/node": "^20.0.0",
+    "@types/pg": "^8.11.0",
+    "drizzle-kit": "^0.20.0",
+    "drizzle-orm": "^0.45.1",
+    "typescript": "^5.4.0",
+    "vitest": "^1.6.0"
   },
   "scripts": {
     "build": "tsc",
@@ -23,35 +48,8 @@
     "typecheck": "tsc --noEmit",
     "clean": "rm -rf dist"
   },
-  "dependencies": {
-    "@pearl-framework/core": "workspace:*",
-    "drizzle-orm": "^0.30.0"
-  },
-  "peerDependencies": {
-    "pg": "^8.11.0",
-    "mysql2": "^3.9.0",
-    "better-sqlite3": "^9.4.0"
-  },
-  "peerDependenciesMeta": {
-    "pg": { "optional": true },
-    "mysql2": { "optional": true },
-    "better-sqlite3": { "optional": true }
-  },
-  "devDependencies": {
-    "@types/node": "^20.0.0",
-    "@types/pg": "^8.11.0",
-    "@types/better-sqlite3": "^7.6.0",
-    "typescript": "^5.4.0",
-    "vitest": "^1.6.0",
-    "drizzle-kit": "^0.20.0"
-  },
   "publishConfig": {
     "access": "public",
     "registry": "https://registry.npmjs.org"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/skd09/pearl.js.git",
-    "directory": "packages/database"
   }
 }

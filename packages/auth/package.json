@@ -1,6 +1,6 @@
 {
   "name": "@pearl-framework/auth",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Pearl.js auth — JWT, session, and API token authentication guards",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -13,7 +13,9 @@
   },
   "typesVersions": {
     "*": {
-      "*": ["./dist/index.d.ts"]
+      "*": [
+        "./dist/index.d.ts"
+      ]
     }
   },
   "scripts": {
@@ -44,5 +46,6 @@
     "type": "git",
     "url": "https://github.com/skd09/pearl.js.git",
     "directory": "packages/auth"
-  }
+  },
+  "type": "module"
 }

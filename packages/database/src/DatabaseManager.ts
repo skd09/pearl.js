@@ -97,9 +97,9 @@ export class DatabaseManager {
         config: Extract<DatabaseConfig, { driver: 'sqlite' }>
     ): Promise<AnyDrizzleDb> {
         const { drizzle } = await import('drizzle-orm/better-sqlite3')
-        const Database = await import('better-sqlite3')
+        const { default: Database } = await import('better-sqlite3')
 
-        const client = new Database.default(config.filename)
+        const client = new Database(config.filename)
         return drizzle(client)
     }
 }

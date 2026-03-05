@@ -1,6 +1,6 @@
 {
   "name": "@pearl-framework/core",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Pearl.js core — IoC container, application kernel, service providers",
   "type": "module",
   "main": "./dist/index.js",

@@ -17,6 +17,7 @@ const APP_DIRS = [
   'src/requests',
   'src/providers',
   'src/schema',
+  'config',
   'database/migrations',
   'tests',
 ]
@@ -33,23 +34,17 @@ const packageJson = (name: string) => JSON.stringify({
     test:  'vitest run',
   },
   dependencies: {
-    '@pearl-framework/core':     '^0.1.0',
-    '@pearl-framework/http':     '^0.1.0',
-    '@pearl-framework/validate': '^0.1.0',
-    '@pearl-framework/auth':     '^0.1.0',
-    '@pearl-framework/database': '^0.1.0',
-    '@pearl-framework/events':   '^0.1.0',
-    '@pearl-framework/queue':    '^0.1.0',
-    '@pearl-framework/mail':     '^0.1.0',
-    'drizzle-orm':     '^0.30.0',
-    'zod':             '^3.22.0',
+    '@pearl-framework/pearl': '^0.1.2',
+    'drizzle-orm': '^0.30.0',
+    'zod':         '^3.22.0',
+    'dotenv':      '^16.0.0',
   },
   devDependencies: {
     '@pearl-framework/testing': '^0.1.0',
-    '@types/node':    '^20.0.0',
-    'tsx':            '^4.7.0',
-    'typescript':     '^5.4.0',
-    'vitest':         '^1.6.0',
+    '@types/node': '^20.0.0',
+    'tsx':         '^4.7.0',
+    'typescript':  '^5.4.0',
+    'vitest':      '^1.6.0',
   },
 }, null, 2)
 
@@ -60,17 +55,16 @@ const tsconfig = JSON.stringify({
     moduleResolution:       'Bundler',
     lib:                    ['ES2022'],
     outDir:                 './dist',
-    rootDir:                './src',
     declaration:            true,
     experimentalDecorators: true,
     emitDecoratorMetadata:  true,
     skipLibCheck:           true,
-    types:                  ['node'],
+    strict:                 true,
   },
   include: ['src/**/*', 'tests/**/*'],
 }, null, 2)
 
-const envExample = `APP_NAME=${String.fromCharCode(0x24)}{name}
+const envExample = `APP_NAME=\${name}
 APP_ENV=local
 PORT=3000
 
@@ -79,7 +73,7 @@ DB_HOST=localhost
 DB_PORT=5432
 DB_USER=postgres
 DB_PASSWORD=postgres
-DB_NAME=${String.fromCharCode(0x24)}{name}
+DB_NAME=\${name}
 
 # Redis (for queues)
 REDIS_HOST=localhost
@@ -104,10 +98,15 @@ dist/
 .DS_Store
 `
 
-const serverTs = `import { Application } from '@pearl-framework/core'
-import { Router, HttpKernel } from '@pearl-framework/http'
+const serverTs = `import 'dotenv/config'
+import { Application } from '@pearl-framework/pearl'
+import { Router, HttpKernel } from '@pearl-framework/pearl'
+import { AppServiceProvider } from './providers/AppServiceProvider.js'
 
 const app = new Application()
+app.register(AppServiceProvider)
+await app.boot()
+
 const router = new Router()
 
 router.get('/', async (ctx) => {
@@ -118,14 +117,15 @@ router.get('/health', async (ctx) => {
   ctx.response.json({ status: 'ok', timestamp: new Date().toISOString() })
 })
 
-const kernel = new HttpKernel({ router })
-const port = Number(process.env.PORT ?? 3000)
+const kernel = new HttpKernel()
+kernel.useRouter(router)
 
+const port = Number(process.env.PORT ?? 3000)
 await kernel.listen(port)
 console.log(\`\\n🦪 Pearl running → http://localhost:\${port}\\n\`)
 `
 
-const appProviderTs = `import { ServiceProvider } from '@pearl-framework/core'
+const appProviderTs = `import { ServiceProvider } from '@pearl-framework/pearl'
 
 export class AppServiceProvider extends ServiceProvider {
   register(): void {
@@ -150,10 +150,6 @@ export default defineConfig({
 `
 
 const exampleTest = `import { describe, it } from 'vitest'
-import { HttpTestClient } from '@pearl-framework/testing'
-
-// Import your app bootstrap here
-// import { createApp } from '../src/app.js'
 
 describe('GET /', () => {
   it.todo('returns welcome message')
@@ -194,7 +190,6 @@ export function newApp(program: Command): void {
       else if (options.yarn) pm = 'yarn'
       else if (options.npm) pm = 'npm'
       else {
-        // auto-detect from which is available
         try { execSync('pnpm --version', { stdio: 'ignore' }); pm = 'pnpm' } catch {}
       }
 
@@ -209,14 +204,14 @@ export function newApp(program: Command): void {
         .replace(/\$\{name\}/g, name)
 
       const files: [string, string][] = [
-        ['package.json',            packageJson(name)],
-        ['tsconfig.json',           tsconfig],
-        ['.env.example',            envContent],
-        ['.gitignore',              gitignore],
-        ['src/server.ts',           serverTs],
+        ['package.json',                        packageJson(name)],
+        ['tsconfig.json',                       tsconfig],
+        ['.env.example',                        envContent],
+        ['.gitignore',                          gitignore],
+        ['src/server.ts',                       serverTs],
         ['src/providers/AppServiceProvider.ts', appProviderTs],
-        ['vitest.config.ts',        vitestConfig],
-        ['tests/example.test.ts',   exampleTest],
+        ['vitest.config.ts',                    vitestConfig],
+        ['tests/example.test.ts',               exampleTest],
       ]
 
       for (const [file, content] of files) {

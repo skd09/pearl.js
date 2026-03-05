@@ -1,6 +1,6 @@
 {
   "name": "@pearl-framework/queue",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Pearl.js queue — BullMQ-powered job dispatching, workers, and retries",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -13,7 +13,9 @@
   },
   "typesVersions": {
     "*": {
-      "*": ["./dist/index.d.ts"]
+      "*": [
+        "./dist/index.d.ts"
+      ]
     }
   },
   "scripts": {
@@ -41,5 +43,6 @@
     "type": "git",
     "url": "https://github.com/skd09/pearl.js.git",
     "directory": "packages/queue"
-  }
+  },
+  "type": "module"
 }
