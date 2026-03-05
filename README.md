@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="https://pearljs.dev/favicon.svg" width="64" height="64" alt="Pearl.js" />
+<!-- <img src="https://pearljs.dev/logo.svg" width="64" height="64" alt="Pearl.js" /> -->
 
 # Pearl.js
 
@@ -9,7 +9,6 @@
 Routing · JWT Auth · Drizzle ORM · Validation · Queues · Events · Mail — all wired together. One install.
 
 [![npm version](https://img.shields.io/npm/v/@pearl-framework/pearl?color=60a5fa&labelColor=111118&style=flat-square)](https://www.npmjs.com/package/@pearl-framework/pearl)
-[![CI](https://img.shields.io/github/actions/workflow/status/skd09/pearl.js/ci.yml?branch=main&label=CI&style=flat-square&labelColor=111118&color=4ade80)](https://github.com/skd09/pearl.js/actions/workflows/ci.yml)
 [![license](https://img.shields.io/npm/l/@pearl-framework/pearl?color=4ade80&labelColor=111118&style=flat-square)](./LICENSE)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.4%2B-60a5fa?labelColor=111118&style=flat-square)](https://www.typescriptlang.org/)
 [![Node.js](https://img.shields.io/badge/Node.js-18%2B-4ade80?labelColor=111118&style=flat-square)](https://nodejs.org/)
@@ -191,7 +190,7 @@ npm run build
 
 ## Author
 
-Built by [Sharvari Desai](https://github.com/skd09) · [@thecoderbuddy](https://twitter.com/thecoderbuddy)
+Built by [Sharvari Divekar](https://github.com/skd09) · [sharvari.dev](https://sharvari.dev)
 
 ## License
 
