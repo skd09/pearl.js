@@ -1,56 +1,69 @@
 import { ServiceProvider } from '@pearl-framework/core'
 import { DatabaseManager } from '../DatabaseManager.js'
-import { Migrator } from '../migrations/Migrator.js'
-import type { DatabaseConfig } from '../config.js'
-
-export interface DatabaseServiceConfig {
-  connection: DatabaseConfig
-  migrationsFolder?: string
-  runMigrationsOnBoot?: boolean
-}
+import type { DatabaseAdapter } from '../adapters/DatabaseAdapter.js'
 
 /**
- * DatabaseServiceProvider connects to the database and optionally runs migrations on boot.
+ * DatabaseServiceProvider — registers and boots a DatabaseManager
+ * with whichever adapter the user has configured.
  *
- * Usage — extend this in your app:
+ * Extend this in your app and set the `adapter` property:
  *
- *   export class AppDatabaseServiceProvider extends DatabaseServiceProvider {
- *     protected config: DatabaseServiceConfig = {
- *       connection: {
- *         driver: 'postgres',
- *         host:     env('DB_HOST'),
- *         port:     env.number('DB_PORT', 5432),
- *         user:     env('DB_USER'),
- *         password: env('DB_PASSWORD'),
- *         database: env('DB_NAME'),
- *       },
- *       migrationsFolder: './database/migrations',
- *       runMigrationsOnBoot: true,
- *     }
+ * ── Drizzle (default) ────────────────────────────────────────────────────────
+ *
+ *   import { DrizzleAdapter, DatabaseServiceProvider } from '@pearl-framework/database'
+ *
+ *   export class AppDatabaseProvider extends DatabaseServiceProvider {
+ *     protected adapter = new DrizzleAdapter({
+ *       driver:   'postgres',
+ *       host:     env('DB_HOST'),
+ *       user:     env('DB_USER'),
+ *       password: env('DB_PASSWORD'),
+ *       database: env('DB_NAME'),
+ *     })
+ *   }
+ *
+ * ── Prisma ───────────────────────────────────────────────────────────────────
+ *
+ *   import { PrismaClient } from '@prisma/client'
+ *   import { PrismaAdapter, DatabaseServiceProvider } from '@pearl-framework/database'
+ *
+ *   export class AppDatabaseProvider extends DatabaseServiceProvider {
+ *     protected adapter = new PrismaAdapter({ client: new PrismaClient() })
+ *   }
+ *
+ * ── TypeORM ──────────────────────────────────────────────────────────────────
+ *
+ *   import { DataSource } from 'typeorm'
+ *   import { TypeORMAdapter, DatabaseServiceProvider } from '@pearl-framework/database'
+ *
+ *   export class AppDatabaseProvider extends DatabaseServiceProvider {
+ *     protected adapter = new TypeORMAdapter({
+ *       dataSource: new DataSource({ type: 'postgres', ... }),
+ *     })
+ *   }
+ *
+ * ── No ORM (raw driver) ───────────────────────────────────────────────────────
+ *
+ *   import { NoneAdapter, DatabaseServiceProvider } from '@pearl-framework/database'
+ *
+ *   export class AppDatabaseProvider extends DatabaseServiceProvider {
+ *     protected adapter = new NoneAdapter({ driver: 'postgres', ... })
  *   }
  */
-export class DatabaseServiceProvider extends ServiceProvider {
-    protected config!: DatabaseServiceConfig
+export abstract class DatabaseServiceProvider extends ServiceProvider {
+    /** Set this in your subclass to the adapter of your choice. */
+    protected abstract adapter: DatabaseAdapter
 
     register(): void {
         this.container.singleton(
-            DatabaseManager,
-            () => new DatabaseManager(this.config.connection),
+        DatabaseManager,
+        () => new DatabaseManager(this.adapter),
         )
     }
 
     override async boot(): Promise<void> {
         const manager = this.container.make(DatabaseManager)
         await manager.connect()
-
-        if (this.config.runMigrationsOnBoot && this.config.migrationsFolder) {
-            const migrator = new Migrator(
-                manager.db,
-                this.config.connection,
-                { migrationsFolder: this.config.migrationsFolder },
-            )
-            await migrator.run()
-        }
     }
 
     async shutdown(): Promise<void> {

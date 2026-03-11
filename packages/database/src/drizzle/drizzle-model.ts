@@ -1,5 +1,5 @@
 import { eq, type SQL } from 'drizzle-orm'
-import type { AnyDrizzleDb } from '../DatabaseManager.js'
+import type { AnyDrizzleDb } from '../adapters/DrizzleAdapter.js'
 import type { PgTableWithColumns } from 'drizzle-orm/pg-core'
 import type { MySqlTableWithColumns } from 'drizzle-orm/mysql-core'
 import type { SQLiteTableWithColumns } from 'drizzle-orm/sqlite-core'

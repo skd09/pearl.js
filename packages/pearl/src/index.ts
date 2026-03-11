@@ -159,6 +159,5 @@ export type {
     PostgresConfig,
     MysqlConfig,
     SqliteConfig,
-    DatabaseServiceConfig,
     MigratorOptions,
 } from '@pearl-framework/database'

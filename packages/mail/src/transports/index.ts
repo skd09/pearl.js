@@ -1,6 +1,6 @@
 // nodemailer v7+: named exports only (no default import)
 import { createTransport } from 'nodemailer'
-import type { Attachment } from 'nodemailer/lib/mailer/index.js'
+
 import type { BuiltMail, MailAddress } from '../mail/Mailable.js'
 
 export interface MailTransport {
