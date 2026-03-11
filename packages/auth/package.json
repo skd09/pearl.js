@@ -1,7 +1,7 @@
 {
   "name": "@pearl-framework/auth",
   "version": "0.1.1",
-  "description": "Pearl.js auth — JWT, session, and API token authentication guards",
+  "description": "Pearl.js auth \u2014 JWT, session, and API token authentication guards",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {
@@ -36,7 +36,7 @@
     "@types/jsonwebtoken": "^9.0.0",
     "@types/bcryptjs": "^2.4.6",
     "typescript": "^5.4.0",
-    "vitest": "^1.6.0"
+    "vitest": "^3.0.0"
   },
   "publishConfig": {
     "access": "public",

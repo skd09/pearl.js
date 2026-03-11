@@ -13,13 +13,13 @@ export class ${name}Controller {
   }
 ${resourceful ? `
   async store(ctx: HttpContext): Promise<void> {
-    const body = ctx.request.body()
+    const body = ctx.request.body
     ctx.response.created({ data: body })
   }
 
   async update(ctx: HttpContext): Promise<void> {
     const id = ctx.request.param('id')
-    const body = ctx.request.body()
+    const body = ctx.request.body
     ctx.response.json({ data: { id, ...body } })
   }
 
@@ -79,17 +79,20 @@ export async function ${name}Middleware(ctx: HttpContext, next: NextFn): Promise
 
   job: (name: string) => `import { Job } from '@pearl-framework/queue'
 
+/**
+ * IMPORTANT: Job payload must be plain public properties (not constructor args).
+ * The QueueWorker reconstructs jobs using new ${name}Job() + Object.assign(job, data).
+ */
 export class ${name}Job extends Job {
   readonly queue = 'default'
   get tries() { return 3 }
 
-  constructor(
-    // TODO: define job payload
-    // public readonly userId: number,
-  ) { super() }
+  // TODO: define job payload as plain properties
+  // userId!: number
 
   async handle(): Promise<void> {
     // TODO: implement job logic
+    // const user = await User.find(this.userId)
     console.log('[Job] Handling ${name}Job')
   }
 

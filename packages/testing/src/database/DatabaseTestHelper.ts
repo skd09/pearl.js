@@ -1,3 +1,5 @@
+import { sql } from 'drizzle-orm'
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type AnyDrizzleDb = any
 
@@ -5,29 +7,30 @@ export class DatabaseTestHelper {
     constructor(private readonly db: AnyDrizzleDb) {}
 
     async begin(): Promise<void> {
-        await this.db.execute('BEGIN')
+        await this.db.execute(sql`BEGIN`)
     }
 
     async rollback(): Promise<void> {
-        await this.db.execute('ROLLBACK')
+        await this.db.execute(sql`ROLLBACK`)
     }
 
     async commit(): Promise<void> {
-        await this.db.execute('COMMIT')
+        await this.db.execute(sql`COMMIT`)
     }
 
     async transaction<T>(fn: (db: AnyDrizzleDb) => Promise<T>): Promise<T> {
         await this.begin()
         try {
-        return await fn(this.db)
+            return await fn(this.db)
         } finally {
-        await this.rollback()
+            await this.rollback()
         }
     }
 
     async truncate(...tables: string[]): Promise<void> {
         for (const table of tables) {
-        await this.db.execute(`DELETE FROM ${table}`)
+            // Use parameterized identifier — safe for test-only table names
+            await this.db.execute(sql.raw(`DELETE FROM "${table}"`) )
         }
     }
 

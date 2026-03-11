@@ -11,17 +11,23 @@ export function serve(program: Command): void {
         .option('-p, --port <port>', 'Port to listen on', '3000')
         .option('--host <host>', 'Host to bind to', 'localhost')
         .action((options: { port: string; host: string }) => {
-            const mainFile = path.resolve(process.cwd(), 'src/main.ts');
+            // Support both src/server.ts (default scaffold) and src/main.ts
+            const candidates = ['src/server.ts', 'src/main.ts']
+            const mainFile = candidates
+                .map((c) => path.resolve(process.cwd(), c))
+                .find((f) => fs.existsSync(f))
 
-            if (!fs.existsSync(mainFile)) {
-                console.error(`\n${chalk.red('✘')} Could not find ${chalk.cyan('src/main.ts')}. Are you inside a Pearl project?\n`);
+            if (!mainFile) {
+                console.error(`\n${chalk.red('✘')} Could not find ${chalk.cyan('src/server.ts')} or ${chalk.cyan('src/main.ts')}. Are you inside a Pearl project?\n`);
                 process.exit(1);
             }
+
+            const entryRelative = path.relative(process.cwd(), mainFile)
 
             console.log(`\n${chalk.bold.magenta('Pearl.js')} ${chalk.dim('dev server')}`);
             console.log(`${chalk.dim('─────────────────────────────────────')}`);
             console.log(`  ${chalk.dim('Host')}    ${chalk.cyan(`http://${options.host}:${options.port}`)}`);
-            console.log(`  ${chalk.dim('Entry')}   ${chalk.cyan('src/main.ts')}`);
+            console.log(`  ${chalk.dim('Entry')}   ${chalk.cyan(entryRelative)}`);
             console.log(`${chalk.dim('─────────────────────────────────────')}\n`);
 
             const env = {
@@ -32,13 +38,13 @@ export function serve(program: Command): void {
 
             const child = spawn(
                 'npx',
-                ['ts-node-dev', '--respawn', '--transpile-only', 'src/main.ts'],
+                ['tsx', 'watch', entryRelative],
                 { env, stdio: 'inherit', cwd: process.cwd() }
             );
 
             child.on('error', (err) => {
                 console.error(chalk.red(`\n✘ Failed to start server: ${err.message}`));
-                console.error(chalk.dim('Make sure ts-node-dev is installed: npm install -D ts-node-dev'));
+                console.error(chalk.dim('Make sure tsx is installed: npm install -D tsx'));
                 process.exit(1);
             });
 

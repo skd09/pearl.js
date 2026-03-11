@@ -1,4 +1,5 @@
-import { createServer, type IncomingMessage, type ServerResponse } from 'node:http'
+import { type IncomingMessage, type ServerResponse } from 'node:http'
+import { EventEmitter } from 'node:events'
 import { TestResponse, type RawResponse } from './TestResponse.js'
 
 type AppHandler = (req: IncomingMessage, res: ServerResponse) => void | Promise<void>
@@ -72,8 +73,8 @@ export class HttpTestClient {
         options: RequestOptions = {},
     ): Promise<TestResponse> {
         const bodyString = options.body !== undefined
-        ? JSON.stringify(options.body)
-        : undefined
+            ? JSON.stringify(options.body)
+            : undefined
 
         const headers: Record<string, string> = {
             ...this.defaultHeaders,
@@ -85,8 +86,9 @@ export class HttpTestClient {
         }
 
         return new Promise((resolve, reject) => {
+            // Use proper ESM EventEmitter import (no CJS require())
             const req = Object.assign(
-                new (require('events').EventEmitter)(),
+                new EventEmitter(),
                 {
                     method,
                     url,
@@ -127,8 +129,8 @@ export class HttpTestClient {
             // Emit body
             if (bodyString !== undefined) {
                 process.nextTick(() => {
-                req.emit('data', Buffer.from(bodyString))
-                req.emit('end')
+                    req.emit('data', Buffer.from(bodyString))
+                    req.emit('end')
                 })
             } else {
                 process.nextTick(() => req.emit('end'))

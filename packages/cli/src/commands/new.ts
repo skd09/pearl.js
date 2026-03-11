@@ -4,7 +4,7 @@ import { execSync } from 'node:child_process'
 import fs from 'node:fs'
 import path from 'node:path'
 import ora from 'ora'
-import prompts from 'prompts'
+import { confirm, select } from '@inquirer/prompts'
 
 const APP_DIRS = [
   'src/controllers',
@@ -35,14 +35,14 @@ const packageJson = (name: string) => JSON.stringify({
   },
   dependencies: {
     '@pearl-framework/pearl': '^0.1.2',
-    'drizzle-orm': '^0.30.0',
-    'zod':         '^3.22.0',
+    'drizzle-orm': '^0.45.0',
+    'zod':         '^3.23.0',
     'dotenv':      '^16.0.0',
   },
   devDependencies: {
     '@pearl-framework/testing': '^0.1.0',
     '@types/node': '^20.0.0',
-    'tsx':         '^4.7.0',
+    'tsx':         '^4.15.0',
     'typescript':  '^5.4.0',
     'vitest':      '^1.6.0',
   },
@@ -64,7 +64,7 @@ const tsconfig = JSON.stringify({
   include: ['src/**/*', 'tests/**/*'],
 }, null, 2)
 
-const envExample = `APP_NAME=\${name}
+const envExample = (name: string) => `APP_NAME=${name}
 APP_ENV=local
 PORT=3000
 
@@ -73,14 +73,14 @@ DB_HOST=localhost
 DB_PORT=5432
 DB_USER=postgres
 DB_PASSWORD=postgres
-DB_NAME=\${name}
+DB_NAME=${name}
 
 # Redis (for queues)
 REDIS_HOST=localhost
 REDIS_PORT=6379
 
 # JWT
-JWT_SECRET=change-this-to-a-long-random-secret
+JWT_SECRET=change-this-to-a-long-random-secret-min-32-chars
 
 # Mail
 MAIL_DRIVER=log
@@ -103,7 +103,7 @@ import { Application } from '@pearl-framework/pearl'
 import { Router, HttpKernel } from '@pearl-framework/pearl'
 import { AppServiceProvider } from './providers/AppServiceProvider.js'
 
-const app = new Application()
+const app = new Application({ root: import.meta.dirname })
 app.register(AppServiceProvider)
 await app.boot()
 
@@ -158,7 +158,7 @@ describe('GET /', () => {
 
 export function newApp(program: Command): void {
   program
-    .command('new <name>')
+    .command('new <n>')
     .description('Scaffold a new Pearl.js application')
     .option('--no-install', 'Skip npm install')
     .option('--npm',  'Use npm')
@@ -171,11 +171,9 @@ export function newApp(program: Command): void {
 
       // ─── Check if dir exists ────────────────────────────────────────────
       if (fs.existsSync(appDir)) {
-        const { overwrite } = await prompts({
-          type: 'confirm',
-          name: 'overwrite',
+        const overwrite = await confirm({
           message: `Directory ${chalk.cyan(name)} already exists. Overwrite?`,
-          initial: false,
+          default: false,
         })
         if (!overwrite) {
           console.log(chalk.dim('\nAborted.'))
@@ -200,8 +198,7 @@ export function newApp(program: Command): void {
         fs.mkdirSync(path.join(appDir, dir), { recursive: true })
       }
 
-      const envContent = envExample
-        .replace(/\$\{name\}/g, name)
+      const envContent = envExample(name)
 
       const files: [string, string][] = [
         ['package.json',                        packageJson(name)],

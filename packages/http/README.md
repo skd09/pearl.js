@@ -1,122 +1,207 @@
 # @pearl-framework/http
 
-> Router, middleware pipeline, Request/Response, and decorators for Pearl.js
+> Router, middleware pipeline, Request/Response, and HTTP server for Pearl.js.
+
+[![npm](https://img.shields.io/npm/v/@pearl-framework/http?color=a855f7&labelColor=111118&style=flat-square)](https://www.npmjs.com/package/@pearl-framework/http)
 
 ## Installation
 
 ```bash
-pnpm add @pearl-framework/http @pearl-framework/core
+npm install @pearl-framework/http @pearl-framework/core
 ```
 
-## Usage
+---
 
-### Basic routing
+## Getting Started
 
-```ts
+```typescript
 import { Router, HttpKernel } from '@pearl-framework/http'
 
 const router = new Router()
 
-router.get('/users',     listUsers)
-router.post('/users',    createUser)
-router.get('/users/:id', getUser)
-router.put('/users/:id', updateUser)
-router.delete('/users/:id', deleteUser)
+router.get('/', (ctx) => ctx.response.json({ message: 'Hello' }))
 
-const kernel = new HttpKernel({ router })
-await kernel.listen(3000)
+await new HttpKernel().useRouter(router).listen(3000)
+// → Listening on http://localhost:3000
 ```
 
-### Request & Response
+---
 
-```ts
-router.post('/users', async (ctx) => {
-  const body = ctx.request.body<{ name: string; email: string }>()
-  const id   = ctx.request.param('id')
-  const page = ctx.request.query('page', '1')
-  const token = ctx.request.header('authorization')
+## Routing
 
-  ctx.response.json({ id: 1, ...body })
-  ctx.response.created({ id: 1 })
-  ctx.response.notFound('User not found')
-  ctx.response.unauthorized()
-  ctx.response.redirect('/login')
+### Basic routes
+
+```typescript
+router.get('/users',         listUsers)
+router.post('/users',        createUser)
+router.get('/users/:id',     getUser)
+router.put('/users/:id',     updateUser)
+router.patch('/users/:id',   patchUser)
+router.delete('/users/:id',  deleteUser)
+```
+
+### Route groups
+
+Group routes under a common prefix to keep things organised:
+
+```typescript
+router.group('/api/v1', (r) => {
+  r.group('/users', (r) => {
+    r.get('/',    listUsers)
+    r.post('/',   createUser)
+    r.get('/:id', getUser)
+  })
+
+  r.group('/posts', (r) => {
+    r.get('/',    listPosts)
+    r.post('/',   createPost)
+    r.get('/:id', getPost)
+  })
 })
 ```
 
-### Middleware
+---
 
-```ts
+## Request
+
+```typescript
+router.post('/users', async (ctx) => {
+  const body  = ctx.request.body              // parsed JSON — getter, no parentheses
+  const id    = ctx.request.param('id')       // /users/:id → '42'
+  const page  = ctx.request.query('page', '1') // ?page=2 → '2', default '1'
+  const token = ctx.request.header('authorization')
+  const ip    = ctx.request.ip()
+})
+```
+
+---
+
+## Response
+
+```typescript
+router.get('/example', async (ctx) => {
+  ctx.response.json({ id: 1 })              // 200 JSON
+  ctx.response.json({ id: 1 }, 200)         // explicit status
+  ctx.response.created({ id: 1 })           // 201
+  ctx.response.noContent()                  // 204
+  ctx.response.badRequest('Bad input')      // 400
+  ctx.response.unauthorized()               // 401
+  ctx.response.forbidden()                  // 403
+  ctx.response.notFound('Not found')        // 404
+  ctx.response.redirect('/login')           // 302
+  ctx.response.redirect('/login', 301)      // 301 permanent
+  ctx.response.status(418).json({ im: 'a teapot' }) // chainable status
+})
+```
+
+---
+
+## Middleware
+
+Middleware is any function or class that follows the `(ctx, next) => Promise<void>` shape.
+
+### Function middleware
+
+```typescript
 import type { HttpContext, NextFn } from '@pearl-framework/http'
 
 async function logger(ctx: HttpContext, next: NextFn) {
-  console.log(`${ctx.request.method} ${ctx.request.url}`)
+  const start = Date.now()
   await next()
+  console.log(`${ctx.request.method} ${ctx.request.url} — ${Date.now() - start}ms`)
 }
+```
 
-// Global middleware
-const kernel = new HttpKernel({ router, middleware: [logger] })
+### Class middleware
 
-// Route-level middleware
+```typescript
+class RateLimiter {
+  constructor(private readonly limit: number) {}
+
+  async handle(ctx: HttpContext, next: NextFn) {
+    const ok = await checkRateLimit(ctx.request.ip(), this.limit)
+    if (!ok) return ctx.response.status(429).json({ message: 'Too many requests' })
+    await next()
+  }
+}
+```
+
+### Applying middleware
+
+```typescript
+// Global — runs on every request
+const kernel = new HttpKernel()
+kernel.useMiddleware([logger, new RateLimiter(100)])
+kernel.useRouter(router)
+
+// Route-level — runs only for this route
 router.get('/admin', adminHandler, [authMiddleware, logger])
+router.post('/users', createUser, [ValidationPipe(CreateUserRequest)])
 ```
 
-### Controller decorators
+---
 
-```ts
-import { Controller, Get, Post } from '@pearl-framework/http'
+## Error handling
 
-@Controller('/users')
-export class UserController {
-  @Get('/')
-  async index(ctx: HttpContext) {
-    ctx.response.json({ users: [] })
-  }
+Throw or return from your handler and Pearl's kernel will catch it:
 
-  @Post('/')
-  async store(ctx: HttpContext) {
-    ctx.response.created({ id: 1 })
-  }
+```typescript
+import { HttpException } from '@pearl-framework/http'
 
-  @Get('/:id')
-  async show(ctx: HttpContext) {
-    const id = ctx.request.param('id')
-    ctx.response.json({ id })
-  }
-}
+router.get('/users/:id', async (ctx) => {
+  const user = await User.find(db, ctx.request.param('id'))
+  if (!user) throw new HttpException(404, 'User not found')
+  ctx.response.json(user)
+})
 ```
 
-## API
+`ValidationException` from `@pearl-framework/validate` is also caught automatically and formatted as a `422` response.
+
+---
+
+## API Reference
 
 ### `Router`
 
 | Method | Description |
-|--------|-------------|
-| `get(path, handler, middleware?)` | Register GET route |
-| `post(path, handler, middleware?)` | Register POST route |
-| `put(path, handler, middleware?)` | Register PUT route |
-| `patch(path, handler, middleware?)` | Register PATCH route |
-| `delete(path, handler, middleware?)` | Register DELETE route |
-| `group(prefix, fn)` | Group routes under a prefix |
+|---|---|
+| `get(path, handler, middleware?)` | Register a GET route |
+| `post(path, handler, middleware?)` | Register a POST route |
+| `put(path, handler, middleware?)` | Register a PUT route |
+| `patch(path, handler, middleware?)` | Register a PATCH route |
+| `delete(path, handler, middleware?)` | Register a DELETE route |
+| `group(prefix, fn)` | Group routes under a prefix — `fn` receives the router |
 
 ### `Request`
 
-| Method | Description |
-|--------|-------------|
-| `body<T>()` | Parsed request body |
-| `param(key)` | Route parameter |
-| `query(key, default?)` | Query string value |
-| `header(key)` | Request header |
-| `ip()` | Client IP address |
+| Property / Method | Type | Description |
+|---|---|---|
+| `body` | `unknown` | Parsed JSON request body (getter) |
+| `param(key)` | `string` | Route parameter value |
+| `query(key, default?)` | `string` | Query string value |
+| `header(key)` | `string \| undefined` | Request header |
+| `method` | `string` | HTTP method |
+| `url` | `string` | Full request URL |
+| `ip()` | `string` | Client IP address |
 
 ### `Response`
 
+| Method | Status | Description |
+|---|---|---|
+| `json(data, status?)` | 200 | Send a JSON response |
+| `created(data?)` | 201 | Resource created |
+| `noContent()` | 204 | Empty response |
+| `badRequest(msg?)` | 400 | Bad request |
+| `unauthorized(msg?)` | 401 | Authentication required |
+| `forbidden(msg?)` | 403 | Access denied |
+| `notFound(msg?)` | 404 | Resource not found |
+| `redirect(url, status?)` | 302 | Redirect |
+| `status(code)` | — | Set status code, returns `this` for chaining |
+
+### `HttpKernel`
+
 | Method | Description |
-|--------|-------------|
-| `json(data, status?)` | Send JSON response |
-| `created(data?)` | 201 Created |
-| `noContent()` | 204 No Content |
-| `notFound(message?)` | 404 Not Found |
-| `unauthorized(message?)` | 401 Unauthorized |
-| `forbidden(message?)` | 403 Forbidden |
-| `redirect(url, status?)` | Redirect response |
+|---|---|
+| `useRouter(router)` | Attach a router |
+| `useMiddleware(middleware[])` | Register global middleware |
+| `listen(port, host?)` | Start the HTTP server — returns a `Promise<void>` |

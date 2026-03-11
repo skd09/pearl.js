@@ -1,6 +1,8 @@
 # @pearl-framework/cli
 
-The official CLI for the [Pearl.js](https://github.com/skd09/pearl.js) TypeScript framework.
+> Scaffold and generate Pearl.js projects from the command line.
+
+[![npm](https://img.shields.io/npm/v/@pearl-framework/cli?color=a855f7&labelColor=111118&style=flat-square)](https://www.npmjs.com/package/@pearl-framework/cli)
 
 ## Installation
 
@@ -8,102 +10,159 @@ The official CLI for the [Pearl.js](https://github.com/skd09/pearl.js) TypeScrip
 npm install -g @pearl-framework/cli
 ```
 
-Or use directly with npx — no install needed:
+Or use directly without installing:
 
 ```bash
 npx @pearl-framework/cli new my-app
 ```
 
-## Commands
+---
 
-### Application
+## `pearl new` — Scaffold a Project
 
-| Command | Description |
-|---------|-------------|
-| `pearl new <name>` | Scaffold a new Pearl.js application |
-| `pearl serve` | Start the dev server with hot reload |
-| `pearl list` | List all available commands |
-
-### Generators
-
-All `make:*` commands support `--force` to overwrite existing files.
-
-| Command | Output |
-|---------|--------|
-| `pearl make:controller <n>` | `src/controllers/<Name>Controller.ts` |
-| `pearl make:model <n>` | `src/models/<Name>.ts` |
-| `pearl make:migration <n>` | `database/migrations/<timestamp>_<name>.ts` |
-| `pearl make:middleware <n>` | `src/middleware/<Name>Middleware.ts` |
-| `pearl make:job <n>` | `src/jobs/<Name>Job.ts` |
-| `pearl make:mail <n>` | `src/mail/<Name>Mail.ts` |
-| `pearl make:event <n>` | `src/events/<Name>Event.ts` |
-| `pearl make:listener <n>` | `src/listeners/<Name>Listener.ts` |
-| `pearl make:request <n>` | `src/requests/<Name>Request.ts` |
-| `pearl make:resource <n>` | `src/resources/<Name>Resource.ts` |
-
-## Examples
+Creates a new Pearl.js project with all packages, TypeScript, Vitest, and hot-reload configured:
 
 ```bash
-# Create a new app (auto-detects pnpm/yarn/npm)
-pearl new blog-api
-
-# Create with a specific package manager
-pearl new blog-api --npm
-pearl new blog-api --pnpm
-pearl new blog-api --yarn
-
-# Skip dependency install
-pearl new blog-api --no-install
-
-# Generate a resourceful controller
-pearl make:controller Post --resource
-
-# Generate a model with its migration
-pearl make:model Post --migration
-
-# Generate a listener tied to an event
-pearl make:listener SendWelcomeEmail --event UserRegistered
-
-# Start dev server on a custom port
-pearl serve --port 8080
+pearl new my-app
 ```
 
-## Project Structure
+Options:
 
-After running `pearl new my-app`:
+| Flag | Description |
+|---|---|
+| `--pnpm` | Use pnpm |
+| `--yarn` | Use yarn |
+| `--npm` | Use npm |
+| `--no-install` | Skip dependency install |
+
+```bash
+pearl new my-app --pnpm
+pearl new my-app --no-install
+```
+
+**What gets created:**
 
 ```
 my-app/
 ├── src/
-│   ├── server.ts              ← entry point, runs immediately
+│   ├── server.ts                    ← entry point
 │   ├── providers/
 │   │   └── AppServiceProvider.ts
 │   ├── controllers/
-│   ├── models/
-│   ├── schema/
+│   ├── schema/                      ← Drizzle table definitions
 │   ├── requests/
+│   ├── jobs/
 │   ├── events/
 │   ├── listeners/
-│   ├── jobs/
 │   ├── mail/
 │   └── middleware/
 ├── database/
 │   └── migrations/
 ├── tests/
 │   └── example.test.ts
-├── .env                       ← ready to configure
+├── .env                             ← pre-filled with sensible defaults
 ├── .env.example
-├── package.json               ← all @pearl-framework/* packages included
+├── package.json
 ├── tsconfig.json
 └── vitest.config.ts
 ```
 
-## What's included
+After scaffolding, start the dev server:
 
-Every new Pearl app comes pre-configured with:
+```bash
+cd my-app
+npm run dev
+# → Server running on http://localhost:3000
+```
 
-- All `@pearl-framework/*` packages as dependencies
-- TypeScript with ESM + `Bundler` module resolution
-- `tsx` for fast dev server with hot reload (`pnpm dev`)
-- `vitest` for testing (`pnpm test`)
-- `.env` with sensible defaults for Postgres, Redis, JWT, and mail
+---
+
+## `pearl serve` — Dev Server
+
+Start the development server with hot reload powered by `tsx watch`:
+
+```bash
+pearl serve
+pearl serve --port 8080
+pearl serve --host 0.0.0.0
+```
+
+The command looks for `src/server.ts` first, then falls back to `src/main.ts`.
+
+---
+
+## Generators
+
+All generators create files in the conventional location. Use `--force` to overwrite an existing file.
+
+### Controllers
+
+```bash
+pearl make:controller Post               # src/controllers/PostController.ts
+pearl make:controller Post --resource    # with index, show, store, update, destroy methods
+```
+
+### Models & Migrations
+
+```bash
+pearl make:model Post                    # src/models/Post.ts
+pearl make:model Post --migration        # model + database/migrations/<timestamp>_create_posts.ts
+pearl make:migration create_posts_table  # migration only
+```
+
+### Middleware
+
+```bash
+pearl make:middleware RequireAdmin       # src/middleware/RequireAdminMiddleware.ts
+```
+
+### Validation
+
+```bash
+pearl make:request CreatePostRequest    # src/requests/CreatePostRequest.ts
+```
+
+### Jobs
+
+```bash
+pearl make:job SendWelcomeEmail         # src/jobs/SendWelcomeEmailJob.ts
+```
+
+### Events & Listeners
+
+```bash
+pearl make:event UserRegistered                              # src/events/UserRegisteredEvent.ts
+pearl make:listener SendWelcomeEmail                        # src/listeners/SendWelcomeEmailListener.ts
+pearl make:listener SendWelcomeEmail --event UserRegistered # pre-wired to the event
+```
+
+### Mail
+
+```bash
+pearl make:mailable WelcomeMail         # src/mail/WelcomeMail.ts
+```
+
+### Resources
+
+```bash
+pearl make:resource UserResource        # src/resources/UserResource.ts
+```
+
+---
+
+## What's included in every project
+
+| Feature | Details |
+|---|---|
+| **All `@pearl-framework/*` packages** | Pre-installed and ready to use |
+| **TypeScript** | ESM + `Bundler` module resolution, `strict: true` |
+| **Hot reload** | `tsx watch` via `npm run dev` |
+| **Testing** | `vitest` with an example test |
+| **Environment** | `.env` pre-filled for Postgres, Redis, JWT, and mail |
+
+---
+
+## Requirements
+
+- Node.js **v20+**
+- pnpm, yarn, or npm

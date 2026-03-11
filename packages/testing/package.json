@@ -1,7 +1,7 @@
 {
   "name": "@pearl-framework/testing",
   "version": "0.1.0",
-  "description": "Pearl.js testing — HTTP test client, database helpers, mail fakes, and test utilities",
+  "description": "Pearl.js testing \u2014 HTTP test client, database helpers, mail fakes, and test utilities",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {
@@ -13,7 +13,9 @@
   },
   "typesVersions": {
     "*": {
-      "*": ["./dist/index.d.ts"]
+      "*": [
+        "./dist/index.d.ts"
+      ]
     }
   },
   "scripts": {
@@ -30,10 +32,10 @@
   "devDependencies": {
     "@types/node": "^20.0.0",
     "typescript": "^5.4.0",
-    "vitest": "^1.6.0"
+    "vitest": "^3.0.0"
   },
   "peerDependencies": {
-    "vitest": "^1.6.0"
+    "vitest": "^3.0.0"
   },
   "publishConfig": {
     "access": "public",

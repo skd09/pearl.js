@@ -1,101 +1,108 @@
-# @pearl-framework/core
+# @pearl-framework/pearl
 
-> IoC container, Application lifecycle, and ServiceProvider base for Pearl.js
+> Batteries-included meta-package for Pearl.js — install once, get everything.
+
+[![npm](https://img.shields.io/npm/v/@pearl-framework/pearl?color=a855f7&labelColor=111118&style=flat-square)](https://www.npmjs.com/package/@pearl-framework/pearl)
 
 ## Installation
 
 ```bash
-pnpm add @pearl-framework/core
+npm install @pearl-framework/pearl drizzle-orm zod dotenv
 ```
-
-## Overview
-
-`@pearl-framework/core` is the foundation of every Pearl app. It provides:
-
-- **IoC Container** — type-safe dependency injection with singleton and transient bindings
-- **Application** — bootstraps your app, registers providers, manages lifecycle
-- **ServiceProvider** — base class for organising registrations and boot logic
-- **Config** — typed configuration loader
 
 ## Usage
 
-### Application bootstrap
+Everything Pearl exports is available from a single import:
 
-```ts
-import { Application } from '@pearl-framework/core'
+```typescript
+import {
+  // Application
+  Application,
+  ServiceProvider,
 
-const app = new Application()
+  // HTTP
+  Router,
+  HttpKernel,
+  HttpContext,
 
-app.register(DatabaseServiceProvider)
-app.register(HttpServiceProvider)
+  // Auth
+  AuthManager,
+  JwtGuard,
+  Hash,
+  Authenticate,
+
+  // Validation
+  FormRequest,
+  ValidationPipe,
+  rules,
+  z,
+
+  // Database
+  DatabaseManager,
+  Model,
+  pgTable, serial, varchar, timestamp,
+  eq, and, or, desc, asc, sql,
+
+  // Events
+  Event,
+  Listener,
+  EventDispatcher,
+
+  // Queues
+  Job,
+  QueueManager,
+
+  // Mail
+  Mailable,
+  Mailer,
+  LogTransport,
+} from '@pearl-framework/pearl'
+```
+
+## Minimal example
+
+```typescript
+import 'dotenv/config'
+import { Application, Router, HttpKernel } from '@pearl-framework/pearl'
+import { AppServiceProvider } from './providers/AppServiceProvider.js'
+
+const app = new Application({ root: import.meta.dirname })
 app.register(AppServiceProvider)
-
 await app.boot()
+
+const router = new Router()
+router.get('/', (ctx) => ctx.response.json({ message: 'Hello from Pearl 🦪' }))
+
+await new HttpKernel().useRouter(router).listen(3000)
 ```
 
-### IoC Container
+Or scaffold a full project:
 
-```ts
-// Bind a singleton
-app.container.singleton(Mailer, () => new Mailer(config))
-
-// Bind a transient (new instance every time)
-app.container.bind(Logger, () => new Logger())
-
-// Resolve
-const mailer = app.container.make(Mailer)
+```bash
+npx @pearl-framework/cli new my-app
+cd my-app
+npm run dev
 ```
 
-### ServiceProvider
+## What's included
 
-```ts
-import { ServiceProvider } from '@pearl-framework/core'
+| Export | Source |
+|---|---|
+| `Application`, `ServiceProvider`, `Container`, `Config`, `env` | `@pearl-framework/core` |
+| `Router`, `HttpKernel`, `HttpContext`, `Request`, `Response`, `Pipeline` | `@pearl-framework/http` |
+| `FormRequest`, `ValidationPipe`, `validate`, `validateSync`, `rules`, `z` | `@pearl-framework/validate` |
+| `AuthManager`, `JwtGuard`, `ApiTokenGuard`, `Hash`, `Authenticate`, `OptionalAuth` | `@pearl-framework/auth` |
+| `Event`, `Listener`, `EventDispatcher` | `@pearl-framework/events` |
+| `Job`, `QueueManager`, `QueueWorker` | `@pearl-framework/queue` |
+| `Mailable`, `Mailer`, `SmtpTransport`, `SesTransport`, `LogTransport`, `ArrayTransport` | `@pearl-framework/mail` |
+| `DatabaseManager`, `Model`, `Migrator`, `pgTable`, `eq`, `and`, `sql`, `desc`, ... | `@pearl-framework/database` |
 
-export class AppServiceProvider extends ServiceProvider {
-  register(): void {
-    this.container.singleton(Mailer, () => new Mailer({
-      driver: 'smtp',
-      host: this.config.get('mail.host'),
-    }))
-  }
+## Using packages individually
 
-  override async boot(): Promise<void> {
-    // runs after all providers are registered
-  }
-}
+If you only need specific features, install the packages directly:
+
+```bash
+npm install @pearl-framework/core @pearl-framework/http
 ```
 
-### Config
-
-```ts
-import { Config } from '@pearl-framework/core'
-
-const config = new Config({
-  app: { name: 'Pearl', debug: false },
-  mail: { driver: 'smtp', host: 'smtp.example.com' },
-})
-
-config.get('app.name')       // 'Pearl'
-config.get('app.debug')      // false
-config.get('missing', 'default') // 'default'
-```
-
-## API
-
-### `Container`
-
-| Method | Description |
-|--------|-------------|
-| `singleton(token, factory)` | Register a shared instance |
-| `bind(token, factory)` | Register a new instance each time |
-| `instance(token, value)` | Register an existing object |
-| `make(token)` | Resolve a binding |
-| `has(token)` | Check if a binding exists |
-
-### `Application`
-
-| Method | Description |
-|--------|-------------|
-| `register(Provider)` | Register a service provider |
-| `boot()` | Boot all registered providers |
-| `make(token)` | Shorthand for `container.make()` |
+See the [Pearl.js monorepo](https://github.com/skd09/pearl.js) for each package's documentation.

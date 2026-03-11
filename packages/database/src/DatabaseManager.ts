@@ -6,6 +6,9 @@ export type AnyDrizzleDb = any
 
 export class DatabaseManager {
     private _db?: AnyDrizzleDb
+    // Keep a reference to the underlying connection pool/client for proper teardown
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    private _client?: any
     private _config: DatabaseConfig
 
     constructor(config: DatabaseConfig) {
@@ -18,15 +21,15 @@ export class DatabaseManager {
         if (this._db) return this._db
 
         switch (this._config.driver) {
-        case 'postgres':
-            this._db = await this.connectPostgres(this._config)
-            break
-        case 'mysql':
-            this._db = await this.connectMysql(this._config)
-            break
-        case 'sqlite':
-            this._db = await this.connectSqlite(this._config)
-            break
+            case 'postgres':
+                this._db = await this.connectPostgres(this._config)
+                break
+            case 'mysql':
+                this._db = await this.connectMysql(this._config)
+                break
+            case 'sqlite':
+                this._db = await this.connectSqlite(this._config)
+                break
         }
 
         return this._db
@@ -45,12 +48,34 @@ export class DatabaseManager {
     async disconnect(): Promise<void> {
         if (!this._db) return
 
-        if (this._config.driver === 'postgres') {
-            const { sql } = await import('drizzle-orm')
-            await this._db.execute(sql`SELECT 1`) // flush pending queries
+        try {
+            switch (this._config.driver) {
+                case 'postgres': {
+                    // End the pg connection pool
+                    if (this._client && typeof this._client.end === 'function') {
+                        await this._client.end()
+                    }
+                    break
+                }
+                case 'mysql': {
+                    // End the mysql2 pool
+                    if (this._client && typeof this._client.end === 'function') {
+                        await this._client.end()
+                    }
+                    break
+                }
+                case 'sqlite': {
+                    // Close the better-sqlite3 connection (synchronous)
+                    if (this._client && typeof this._client.close === 'function') {
+                        this._client.close()
+                    }
+                    break
+                }
+            }
+        } finally {
+            this._db = undefined
+            this._client = undefined
         }
-
-        this._db = undefined
     }
 
     // ─── Driver connections ───────────────────────────────────────────────────
@@ -72,6 +97,7 @@ export class DatabaseManager {
             max: config.pool?.max ?? 10,
         })
 
+        this._client = pool
         return drizzle(pool)
     }
 
@@ -90,6 +116,7 @@ export class DatabaseManager {
             connectionLimit: config.pool?.max ?? 10,
         })
 
+        this._client = pool
         return drizzle(pool)
     }
 
@@ -100,6 +127,7 @@ export class DatabaseManager {
         const { default: Database } = await import('better-sqlite3')
 
         const client = new Database(config.filename)
+        this._client = client
         return drizzle(client)
     }
 }

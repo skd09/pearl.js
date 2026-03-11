@@ -2,7 +2,7 @@
   "name": "@pearl-framework/database",
   "version": "0.1.8",
   "type": "module",
-  "description": "Pearl.js — The TypeScript framework that does it right.",
+  "description": "Pearl.js \u2014 The TypeScript framework that does it right.",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {
@@ -39,7 +39,7 @@
     "drizzle-kit": "^0.20.0",
     "drizzle-orm": "^0.45.1",
     "typescript": "^5.4.0",
-    "vitest": "^1.6.0"
+    "vitest": "^3.0.0"
   },
   "scripts": {
     "build": "tsc",
