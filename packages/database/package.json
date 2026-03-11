@@ -1,8 +1,8 @@
 {
   "name": "@pearl-framework/database",
-  "version": "0.1.8",
+  "version": "0.2.0",
   "type": "module",
-  "description": "Pearl.js \u2014 The TypeScript framework that does it right.",
+  "description": "Pearl.js — The TypeScript framework that does it right.",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {

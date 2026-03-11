@@ -24,10 +24,9 @@ import { Job } from '@pearl-framework/queue'
 export class SendWelcomeEmail extends Job {
   readonly queue   = 'mail'
   get tries()      { return 3 }
-  get retryDelay() { return 2_000 }  // ms — doubles on each retry (exponential backoff)
+  get retryDelay() { return 2_000 }
 
-  // ✅ Payload as properties
-  userId!: number
+  userId!: number 
 
   async handle(): Promise<void> {
     const user = await User.find(db, this.userId)
