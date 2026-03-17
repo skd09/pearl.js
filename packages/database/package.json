@@ -1,19 +1,38 @@
 {
   "name": "@pearl-framework/database",
-  "version": "0.2.1",
+  "version": "1.0.0",
   "type": "module",
   "description": "Pearl.js — ORM-agnostic database layer. Supports Drizzle, Prisma, TypeORM, and raw drivers.",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
+  "keywords": [
+    "pearl",
+    "pearljs",
+    "database",
+    "drizzle",
+    "prisma",
+    "typeorm",
+    "orm",
+    "postgres",
+    "mysql",
+    "sqlite",
+    "typescript",
+    "nodejs"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/skd09/pearl.js.git",
+    "directory": "packages/database"
+  },
   "exports": {
     ".": {
-      "types":   "./dist/index.d.ts",
-      "import":  "./dist/index.js",
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
       "default": "./dist/index.js"
     },
     "./drizzle": {
-      "types":   "./dist/drizzle/query.d.ts",
-      "import":  "./dist/drizzle/query.js",
+      "types": "./dist/drizzle/query.d.ts",
+      "import": "./dist/drizzle/query.js",
       "default": "./dist/drizzle/query.js"
     }
   },
@@ -21,41 +40,55 @@
     "@pearl-framework/core": "workspace:*"
   },
   "peerDependencies": {
-    "better-sqlite3":  "^9.4.0",
-    "drizzle-orm":     "^0.30.0 || ^0.45.0",
-    "mysql2":          "^3.9.0",
-    "pg":              "^8.11.0",
-    "prisma":          ">=5.0.0",
-    "@prisma/client":  ">=5.0.0",
-    "typeorm":         ">=0.3.0"
+    "better-sqlite3": "^9.4.0",
+    "drizzle-orm": "^0.30.0 || ^0.45.0",
+    "mysql2": "^3.9.0",
+    "pg": "^8.11.0",
+    "prisma": ">=5.0.0",
+    "@prisma/client": ">=5.0.0",
+    "typeorm": ">=0.3.0"
   },
   "peerDependenciesMeta": {
-    "better-sqlite3": { "optional": true },
-    "drizzle-orm":    { "optional": true },
-    "mysql2":         { "optional": true },
-    "pg":             { "optional": true },
-    "prisma":         { "optional": true },
-    "@prisma/client": { "optional": true },
-    "typeorm":        { "optional": true }
+    "better-sqlite3": {
+      "optional": true
+    },
+    "drizzle-orm": {
+      "optional": true
+    },
+    "mysql2": {
+      "optional": true
+    },
+    "pg": {
+      "optional": true
+    },
+    "prisma": {
+      "optional": true
+    },
+    "@prisma/client": {
+      "optional": true
+    },
+    "typeorm": {
+      "optional": true
+    }
   },
   "devDependencies": {
     "@types/better-sqlite3": "^7.6.0",
-    "@types/node":           "^20.0.0",
-    "@types/pg":             "^8.11.0",
-    "drizzle-kit":           "^0.20.0",
-    "drizzle-orm":           "^0.45.1",
-    "typescript":            "^5.4.0",
-    "vitest":                "^3.0.0"
+    "@types/node": "^20.0.0",
+    "@types/pg": "^8.11.0",
+    "drizzle-kit": "^0.20.0",
+    "drizzle-orm": "^0.45.1",
+    "typescript": "^5.4.0",
+    "vitest": "^3.0.0"
   },
   "scripts": {
-    "build":     "tsc",
-    "dev":       "tsc --watch",
-    "test":      "vitest run",
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "test": "vitest run",
     "typecheck": "tsc --noEmit",
-    "clean":     "rm -rf dist"
+    "clean": "rm -rf dist"
   },
   "publishConfig": {
-    "access":   "public",
+    "access": "public",
     "registry": "https://registry.npmjs.org"
   }
 }

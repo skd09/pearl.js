@@ -1,9 +1,20 @@
 {
   "name": "@pearl-framework/mail",
-  "version": "0.2.1",
+  "version": "1.0.0",
   "description": "Pearl.js mail — Nodemailer-powered mailable classes, transports, and queue support",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
+  "keywords": [
+    "pearl",
+    "pearljs",
+    "mail",
+    "email",
+    "nodemailer",
+    "smtp",
+    "mailable",
+    "typescript",
+    "nodejs"
+  ],
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",

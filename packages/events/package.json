@@ -1,9 +1,19 @@
 {
   "name": "@pearl-framework/events",
-  "version": "0.2.0",
+  "version": "1.0.0",
   "description": "Pearl.js events — type-safe event dispatcher, listeners, and queued events",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
+  "keywords": [
+    "pearl",
+    "pearljs",
+    "events",
+    "event-dispatcher",
+    "pub-sub",
+    "typescript",
+    "nodejs",
+    "framework"
+  ],
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",

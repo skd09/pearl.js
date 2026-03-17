@@ -1,6 +1,6 @@
 {
   "name": "@pearl-framework/pearl",
-  "version": "0.2.0",
+  "version": "1.0.0",
   "description": "Pearl.js — The TypeScript framework that does it right.",
   "type": "module",
   "main": "./dist/index.js",
@@ -34,9 +34,18 @@
   },
   "keywords": [
     "pearl",
+    "pearljs",
     "framework",
     "typescript",
-    "nodejs"
+    "nodejs",
+    "backend",
+    "mvc",
+    "rest-api",
+    "laravel-inspired",
+    "drizzle",
+    "jwt",
+    "zod",
+    "bullmq"
   ],
   "license": "MIT",
   "publishConfig": {

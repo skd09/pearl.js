@@ -1,9 +1,20 @@
 {
   "name": "@pearl-framework/queue",
-  "version": "0.2.0",
+  "version": "1.0.0",
   "description": "Pearl.js queue — BullMQ-powered job dispatching, workers, and retries",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
+  "keywords": [
+    "pearl",
+    "pearljs",
+    "queue",
+    "bullmq",
+    "jobs",
+    "background-jobs",
+    "redis",
+    "typescript",
+    "nodejs"
+  ],
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",

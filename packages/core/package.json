@@ -1,10 +1,21 @@
 {
   "name": "@pearl-framework/core",
-  "version": "0.2.0",
+  "version": "1.0.0",
   "description": "Pearl.js core — IoC container, application kernel, service providers",
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
+  "keywords": [
+    "pearl",
+    "pearljs",
+    "ioc",
+    "container",
+    "dependency-injection",
+    "service-provider",
+    "typescript",
+    "nodejs",
+    "framework"
+  ],
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
