@@ -1,9 +1,20 @@
 {
   "name": "@pearl-framework/auth",
-  "version": "0.2.0",
+  "version": "1.0.0",
   "description": "Pearl.js auth — JWT, session, and API token authentication guards",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
+  "keywords": [
+    "pearl",
+    "pearljs",
+    "auth",
+    "jwt",
+    "authentication",
+    "bcrypt",
+    "typescript",
+    "nodejs",
+    "framework"
+  ],
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",

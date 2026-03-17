@@ -25,13 +25,14 @@ Most Node.js projects start the same way: pick a router, find a compatible auth 
 ```typescript
 import 'dotenv/config'
 import { Application, Router, HttpKernel } from '@pearl-framework/pearl'
-import { Authenticate } from '@pearl-framework/pearl'
+import { Authenticate, AuthManager } from '@pearl-framework/pearl'
 import { AppServiceProvider } from './providers/AppServiceProvider.js'
 
 const app = new Application({ root: import.meta.dirname })
 app.register(AppServiceProvider)
 await app.boot()
 
+const auth   = app.container.make(AuthManager)
 const router = new Router()
 
 router.get('/health', (ctx) =>
@@ -39,8 +40,8 @@ router.get('/health', (ctx) =>
 )
 
 router.get('/me', (ctx) =>
-  ctx.response.json(ctx.user()),
-  [Authenticate(app.make(AuthManager))]
+  ctx.response.json(ctx.get('auth.user')),
+  [Authenticate(auth)]
 )
 
 await new HttpKernel().useRouter(router).listen(3000)
@@ -55,7 +56,7 @@ await new HttpKernel().useRouter(router).listen(3000)
 |---|---|
 | 🔀 **Routing** | Express-inspired router with typed params, route groups, and middleware chains |
 | 🔐 **Auth** | JWT guard with pluggable user providers — register, login, and protect routes in minutes |
-| 🗃️ **Database** | Drizzle ORM with a `DatabaseManager` — Postgres, MySQL, and SQLite with auto-migrations |
+| 🗃️ **Database** | Drizzle ORM via `DrizzleAdapter` — Postgres, MySQL, and SQLite with auto-migrations |
 | ✅ **Validation** | Zod-powered `FormRequest` classes — validate and type your request bodies in one step |
 | 📬 **Mail** | `Mailable` classes with SMTP, SES, log, and array transports |
 | 📣 **Events** | Typed synchronous event dispatcher — decouple your services cleanly |
@@ -76,7 +77,7 @@ cd my-app
 npm run dev
 ```
 
-Your server is live at `http://localhost:3000`. The scaffold includes TypeScript, Drizzle, Zod, Vitest, hot-reload via `tsx`, and a `.env` pre-filled with sensible defaults.
+Your server is live at `http://localhost:3000`. The scaffold includes TypeScript, Drizzle, Zod, Vitest, hot-reload via `tsx watch`, and a `.env` pre-filled with sensible defaults.
 
 **Manual install:**
 
@@ -90,36 +91,43 @@ npm install @pearl-framework/pearl drizzle-orm zod dotenv
 
 ```typescript
 // src/controllers/AuthController.ts
-import { HttpContext } from '@pearl-framework/pearl'
+import type { HttpContext } from '@pearl-framework/pearl'
 import { Hash, AuthManager } from '@pearl-framework/pearl'
-import { db } from '../providers/AppServiceProvider.js'
+import { DrizzleAdapter } from '@pearl-framework/database'
 import { users } from '../schema/users.js'
 
 export class AuthController {
-  constructor(private readonly auth: AuthManager) {}
+  constructor(
+    private readonly auth: AuthManager,
+    private readonly db: DrizzleAdapter,
+  ) {}
 
   async register(ctx: HttpContext) {
-    const { name, email, password } = ctx.request.body
+    const { name, email, password } = ctx.request.body as {
+      name: string; email: string; password: string
+    }
 
-    const [user] = await db.insert(users).values({
+    await this.db.connection().insert(users).values({
       name,
       email,
       password: await Hash.make(password),
-    }).returning()
+    })
 
     const token = await this.auth.attempt(email, password)
-    ctx.response.created({ user, token })
+    ctx.response.created({ token })
   }
 
   async login(ctx: HttpContext) {
-    const { email, password } = ctx.request.body
+    const { email, password } = ctx.request.body as {
+      email: string; password: string
+    }
     const token = await this.auth.attempt(email, password)
     if (!token) return ctx.response.unauthorized('Invalid credentials')
     ctx.response.json({ token })
   }
 
   async me(ctx: HttpContext) {
-    ctx.response.json(ctx.user())
+    ctx.response.json(ctx.get('auth.user'))
   }
 }
 ```
@@ -136,7 +144,7 @@ Pearl is a monorepo. Each package can be used independently or via the `@pearl-f
 | [`@pearl-framework/core`](./packages/core#readme) | Application bootstrap, IoC container, service providers |
 | [`@pearl-framework/http`](./packages/http#readme) | Router, HttpKernel, Request, Response |
 | [`@pearl-framework/auth`](./packages/auth#readme) | JWT guard, `Authenticate` middleware, password hashing |
-| [`@pearl-framework/database`](./packages/database#readme) | Drizzle ORM integration, Model helpers, migrations |
+| [`@pearl-framework/database`](./packages/database#readme) | Drizzle ORM integration, adapter pattern, migrations |
 | [`@pearl-framework/validate`](./packages/validate#readme) | `FormRequest`, Zod validation, built-in rules |
 | [`@pearl-framework/events`](./packages/events#readme) | Type-safe event dispatcher and listener system |
 | [`@pearl-framework/queue`](./packages/queue#readme) | BullMQ job queue, workers, retry and backoff |
@@ -153,8 +161,7 @@ Pearl is a monorepo. Each package can be used independently or via the `@pearl-f
 npx @pearl-framework/cli new my-app
 
 # Dev server (hot reload)
-pearl serve
-pearl serve --port 8080
+npm run dev
 
 # Generators
 pearl make:controller  PostController
@@ -221,7 +228,7 @@ PRs are welcome. For major changes, please open an issue first to discuss what y
 
 ## Author
 
-Built by [Sharvari Divekar](https://github.com/skd09) · [@thecoderbuddy](https://instagram.com/thecoderbuddy)
+Built by [Sharvari Divekar](https://github.com/skd09) · [sharvari.dev](https://sharvari.dev)
 
 ## License
 

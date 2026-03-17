@@ -1,9 +1,19 @@
 {
   "name": "@pearl-framework/testing",
-  "version": "0.2.0",
+  "version": "1.0.0",
   "description": "Pearl.js testing — HTTP test client, database helpers, mail fakes, and test utilities",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
+  "keywords": [
+    "pearl",
+    "pearljs",
+    "testing",
+    "vitest",
+    "http-test-client",
+    "mail-fake",
+    "typescript",
+    "nodejs"
+  ],
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",

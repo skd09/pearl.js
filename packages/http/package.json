@@ -1,9 +1,20 @@
 {
   "name": "@pearl-framework/http",
-  "version": "0.2.0",
+  "version": "1.0.0",
   "description": "Pearl.js HTTP kernel — router, middleware pipeline, request/response",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
+  "keywords": [
+    "pearl",
+    "pearljs",
+    "http",
+    "router",
+    "middleware",
+    "rest-api",
+    "typescript",
+    "nodejs",
+    "framework"
+  ],
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
