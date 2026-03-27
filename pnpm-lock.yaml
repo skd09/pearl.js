@@ -181,8 +181,8 @@ importers:
         specifier: workspace:*
         version: link:../core
       nodemailer:
-        specifier: ^7.0.11
-        version: 7.0.13
+        specifier: ^8.0.4
+        version: 8.0.4
     devDependencies:
       '@types/node':
         specifier: ^20.0.0
@@ -1852,8 +1852,8 @@ packages:
     resolution: {integrity: sha512-s+w+rBWnpTMwSFbaE0UXsRlg7hU4FjekKU4eyAih5T8nJuNZT1nNsskXpxmeqSK9UzkBl6UgRlnKc8hz8IEqOw==}
     hasBin: true
 
-  nodemailer@7.0.13:
-    resolution: {integrity: sha512-PNDFSJdP+KFgdsG3ZzMXCgquO7I6McjY2vlqILjtJd0hy8wEvtugS9xKRF2NWlPNGxvLCXlTNIae4serI7dinw==}
+  nodemailer@8.0.4:
+    resolution: {integrity: sha512-k+jf6N8PfQJ0Fe8ZhJlgqU5qJU44Lpvp2yvidH3vp1lPnVQMgi4yEEMPXg5eJS1gFIJTVq1NHBk7Ia9ARdSBdQ==}
     engines: {node: '>=6.0.0'}
 
   npm-run-path@5.3.0:
@@ -3968,7 +3968,7 @@ snapshots:
       detect-libc: 2.1.2
     optional: true
 
-  nodemailer@7.0.13: {}
+  nodemailer@8.0.4: {}
 
   npm-run-path@5.3.0:
     dependencies:
