@@ -38,13 +38,13 @@
   },
   "dependencies": {
     "@pearl-framework/core": "workspace:*",
-    "nodemailer": "^7.0.11"
+    "nodemailer": "^8.0.5"
   },
   "devDependencies": {
     "@types/node": "^20.0.0",
     "@types/nodemailer": "^7.0.11",
     "typescript": "^5.4.0",
-    "vitest": "^3.0.0"
+    "vitest": "^4.1.0"
   },
   "publishConfig": {
     "access": "public",
