@@ -1,8 +1,8 @@
 {
-  "name": "pearl",
+  "name": "Pearl.js",
   "version": "0.1.0",
   "private": true,
-  "description": "The TypeScript framework that does it right.",
+  "description": "A TypeScript framework for Node.js.",
   "workspaces": [
     "packages/*"
   ],

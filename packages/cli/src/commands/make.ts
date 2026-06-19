@@ -7,12 +7,12 @@ import { stripSuffix, toPascalCase, toSnakeCase } from '../utils/naming.js';
 
 function printCreated(filePath: string): void {
     const rel = path.relative(process.cwd(), filePath);
-    console.log(`  ${chalk.green('✔')} Created: ${chalk.cyan(rel)}`);
+    console.log(`  ${chalk.green('+')} Created: ${chalk.cyan(rel)}`);
 }
 
 function printSkipped(filePath: string, reason: string): void {
     const rel = path.relative(process.cwd(), filePath);
-    console.log(`  ${chalk.yellow('⚠')} Skipped: ${chalk.dim(rel)} ${chalk.yellow(`(${reason})`)}`);
+    console.log(`  ${chalk.yellow('-')} Skipped: ${chalk.dim(rel)} ${chalk.yellow(`(${reason})`)}`);
 }
 
 function safeWrite(filePath: string, content: string, force = false): void {

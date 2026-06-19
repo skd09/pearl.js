@@ -8,7 +8,7 @@ import type { JobsOptions } from 'bullmq'
  * serialized data via `Object.assign`. Design your job's payload as plain
  * public properties rather than constructor parameters:
  *
- * ✅ Correct pattern:
+ * Correct pattern:
  *   export class SendWelcomeEmail extends Job {
  *     readonly queue = 'mail'
  *     userId!: number   // assigned by QueueWorker via Object.assign
@@ -24,9 +24,9 @@ import type { JobsOptions } from 'bullmq'
  *   job.userId = user.id
  *   await queue.dispatch(job)
  *
- * ❌ Incorrect (constructor args won't survive serialization):
+ * Incorrect (constructor args won't survive serialization):
  *   export class SendWelcomeEmail extends Job {
- *     constructor(public readonly userId: number) { super() }  // ← broken
+ *     constructor(public readonly userId: number) { super() }  // broken
  *   }
  */
 export abstract class Job {

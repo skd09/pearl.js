@@ -28,7 +28,7 @@ export class WelcomeEmail extends Mailable {
     return this
       .sendTo(this.user.email)
       .from({ name: 'Pearl App', address: 'hi@pearl.dev' })
-      .subject(`Welcome to Pearl, ${this.user.name}!`)
+      .subject(`Welcome to Pearl.js, ${this.user.name}!`)
       .html(`
         <h1>Hi ${this.user.name}, welcome aboard!</h1>
         <p>We're thrilled to have you.</p>

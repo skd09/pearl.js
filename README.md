@@ -2,9 +2,9 @@
 
 # Pearl.js
 
-**The TypeScript backend framework that does it right.**
+**A TypeScript framework for Node.js backends.**
 
-Routing · JWT & Session Auth · Drizzle ORM · Validation · Background Jobs · Rate Limiting · Mail · Events — wired together. One install.
+Routing, auth, validation, background jobs, mail, and events — already integrated. One install, one boot, write endpoints.
 
 [![npm](https://img.shields.io/npm/v/@pearl-framework/pearl?color=a855f7&labelColor=111118&style=flat-square)](https://www.npmjs.com/package/@pearl-framework/pearl)
 [![CI](https://img.shields.io/github/actions/workflow/status/skd09/pearl.js/ci.yml?branch=main&color=4ade80&labelColor=111118&label=CI&style=flat-square)](https://github.com/skd09/pearl.js/actions)
@@ -18,59 +18,66 @@ Routing · JWT & Session Auth · Drizzle ORM · Validation · Background Jobs ·
 
 ---
 
-## Why Pearl?
+## What you get
 
-Most Node.js projects start the same way: pick a router, find a compatible auth library, wire in an ORM, bolt on a queue, add a mail package, hope they all play nice together. Pearl ships all of that — already integrated, already typed — so you can start building on day one.
+Most Node.js APIs ship the same week-one plumbing: pick a router, find a compatible auth library, wire in an ORM, bolt on a queue, add a mail package, write the validation layer, decide where everything goes. Pearl.js gives you all of that — already integrated, fully typed, with a single install. Your first endpoint is minutes away, not a week into picking libraries.
 
 ```typescript
-import 'dotenv/config'
+// src/server.ts
 import { Application, Router, HttpKernel } from '@pearl-framework/pearl'
 import { Authenticate, AuthManager } from '@pearl-framework/pearl'
 import { AppServiceProvider } from './providers/AppServiceProvider.js'
 
 const app = new Application({ root: import.meta.dirname })
 app.register(AppServiceProvider)
-await app.boot()
+await app.boot()                              // loads .env + boots all providers
 
 const auth   = app.container.make(AuthManager)
 const router = new Router()
 
-router.get('/health', (ctx) =>
-  ctx.response.json({ status: 'ok' })
-)
+router.get('/health', (ctx) => ctx.response.json({ status: 'ok' }))
 
-router.get('/me', (ctx) =>
-  ctx.response.json(ctx.get('auth.user')),
-  [Authenticate(auth)]
+router.get('/me',
+  (ctx) => ctx.response.json(ctx.get('auth.user')),
+  [Authenticate(auth)],                       // auth-protected in one line
 )
 
 await new HttpKernel().useRouter(router).listen(3000)
-// → Server running on http://localhost:3000
 ```
 
 ---
 
-## Features
+## Why developers pick Pearl.js
 
-| | |
-|---|---|
-| 🔀 **Routing** | Express-inspired router with typed params, route groups, and middleware chains |
-| 🔐 **Auth** | `JwtGuard`, `SessionGuard`, and `ApiTokenGuard` with pluggable user providers — protect routes in two lines |
-| 🛡️ **Rate Limiting** | Built-in `RateLimit` middleware with a pluggable store (memory default, swap in Redis for multi-process) |
-| 🗃️ **Database** | Drizzle ORM via `DrizzleAdapter` — Postgres, MySQL, and SQLite with auto-migrations |
-| ✅ **Validation** | Zod-powered `FormRequest` classes — validate and type your request bodies in one step |
-| 📬 **Mail** | `Mailable` classes with SMTP, SES, log, and array transports — plus bounded-concurrency `sendBulk` |
-| 📣 **Events** | Typed event dispatcher with `onError` hook for APM integration |
-| 🏗️ **Queues** | BullMQ-backed job queue — dispatch background jobs with delay, retry, and backoff. Standalone `retryWith` + backoff helpers for one-off async ops |
-| 💉 **IoC Container** | Lightweight service container — bind, singleton, instance, scope |
-| 🧪 **Testing** | HTTP test client, mail fakes, data factories, and transaction-wrapped DB helpers |
-| 🛠️ **CLI** | Scaffold projects and generate controllers, middleware, jobs, and more |
+**Ship faster.** `npx pearl new my-api` scaffolds a complete project with auth routes, validation, queue worker, mail transports, and migration setup already wired. First endpoint in minutes — not after picking a router, comparing auth libraries, and gluing them together.
+
+**Typed end-to-end.** Routes, params, query, validated `FormRequest` input, the authenticated user, job payloads, dispatched events — all inferred from your code. Rename a column and the compiler points at every call site.
+
+**Conventions, not decisions.** Controllers, requests, jobs, listeners, mailables, migrations each have a home, and the CLI generates the boilerplate. No bikeshedding over folder structure, no architectural questions before you write the first route.
+
+**Production-ready, not POC.** Rate limiting, retry with backoff, dead-letter handling, structured `422`/`403` errors, algorithm-pinned JWT, prototype-pollution-safe job payloads, bounded-concurrency bulk mail. The stuff you would normally add after the first outage — already in.
 
 ---
 
-## Quick Start
+## What's included
 
-**Scaffold a new project in one command:**
+| Capability | What you get |
+|---|---|
+| **Routing** | Express-inspired router with typed params, route groups, and middleware chains |
+| **Authentication** | `JwtGuard`, `SessionGuard`, and `ApiTokenGuard` with pluggable user providers — protect routes in two lines |
+| **Rate limiting** | Built-in `RateLimit` middleware with a pluggable store (memory default, swap in Redis for multi-process) |
+| **Database** | Drizzle ORM via `DrizzleAdapter` — Postgres, MySQL, and SQLite with auto-migrations |
+| **Validation** | Zod-powered `FormRequest` classes that throw typed `ValidationException` / `AuthorizationException` |
+| **Mail** | `Mailable` classes with SMTP, SES, log, and array transports — plus bounded-concurrency `sendBulk` |
+| **Events** | Typed event dispatcher with an `onError` hook for APM integration |
+| **Queues** | BullMQ-backed job queue with delay, retry, and backoff. Standalone `retryWith` + backoff helpers for one-off async ops |
+| **IoC Container** | Lightweight service container — bind, singleton, instance, scope. Frozen after boot |
+| **Testing** | HTTP test client, mail fakes, data factories, and transaction-wrapped DB helpers |
+| **CLI** | Scaffold projects and generate controllers, middleware, jobs, mailables, and more |
+
+---
+
+## Quick start
 
 ```bash
 npx @pearl-framework/cli new my-app
@@ -78,17 +85,17 @@ cd my-app
 npm run dev
 ```
 
-Your server is live at `http://localhost:3000`. The scaffold includes TypeScript, Drizzle, Zod, Vitest, hot-reload via `tsx watch`, and a `.env` pre-filled with sensible defaults.
+Your server is live at `http://localhost:3000`. The scaffold ships TypeScript, Drizzle, Zod, Vitest, hot-reload via `tsx watch`, and a `.env` pre-filled with sensible defaults.
 
-**Manual install:**
+**Or install into an existing project:**
 
 ```bash
-npm install @pearl-framework/pearl drizzle-orm zod dotenv
+npm install @pearl-framework/pearl drizzle-orm zod
 ```
 
 ---
 
-## Example: Full Auth Flow
+## A full auth flow
 
 ```typescript
 // src/controllers/AuthController.ts
@@ -137,25 +144,25 @@ export class AuthController {
 
 ## Packages
 
-Pearl is a monorepo. Each package can be used independently or via the `@pearl-framework/pearl` meta-package.
+Pearl.js is a monorepo. Each package is independently installable, or pull the whole stack via the `@pearl-framework/pearl` meta-package.
 
 | Package | Description |
 |---|---|
-| [`@pearl-framework/pearl`](./packages/pearl#readme) | Meta-package — installs everything |
-| [`@pearl-framework/core`](./packages/core#readme) | Application bootstrap, IoC container, service providers |
-| [`@pearl-framework/http`](./packages/http#readme) | Router, HttpKernel, Request, Response |
-| [`@pearl-framework/auth`](./packages/auth#readme) | JWT guard, `Authenticate` middleware, password hashing |
-| [`@pearl-framework/database`](./packages/database#readme) | Drizzle ORM integration, adapter pattern, migrations |
-| [`@pearl-framework/validate`](./packages/validate#readme) | `FormRequest`, Zod validation, built-in rules |
+| [`@pearl-framework/pearl`](./packages/pearl#readme) | Meta-package — re-exports every public API |
+| [`@pearl-framework/core`](./packages/core#readme) | Application bootstrap, IoC container, service providers, config, env |
+| [`@pearl-framework/http`](./packages/http#readme) | Router, kernel, request/response, middleware pipeline, rate limiting |
+| [`@pearl-framework/auth`](./packages/auth#readme) | JWT, session, and API token guards plus `Authenticate` middleware and bcrypt hashing |
+| [`@pearl-framework/database`](./packages/database#readme) | ORM-agnostic adapter pattern with Drizzle as the default |
+| [`@pearl-framework/validate`](./packages/validate#readme) | `FormRequest`, Zod-backed validation, typed validation/authorization exceptions |
 | [`@pearl-framework/events`](./packages/events#readme) | Type-safe event dispatcher and listener system |
-| [`@pearl-framework/queue`](./packages/queue#readme) | BullMQ job queue, workers, retry and backoff |
-| [`@pearl-framework/mail`](./packages/mail#readme) | `Mailable` classes, SMTP / SES / log transports |
-| [`@pearl-framework/cli`](./packages/cli#readme) | `pearl` CLI — scaffold apps and generate files |
+| [`@pearl-framework/queue`](./packages/queue#readme) | BullMQ queue, workers, retry/backoff utilities |
+| [`@pearl-framework/mail`](./packages/mail#readme) | `Mailable` classes, SMTP / SES / log / array transports, bulk send |
+| [`@pearl-framework/cli`](./packages/cli#readme) | `pearl` CLI — scaffold apps, generate files, run migrations |
 | [`@pearl-framework/testing`](./packages/testing#readme) | HTTP test client, mail fakes, factories, DB helpers |
 
 ---
 
-## CLI Reference
+## CLI reference
 
 ```bash
 # New project
@@ -179,7 +186,7 @@ pearl make:migration   create_posts_table
 
 ---
 
-## Project Structure
+## Project structure
 
 ```
 my-app/
@@ -198,7 +205,7 @@ my-app/
 ├── database/
 │   └── migrations/
 ├── tests/
-├── .env
+├── .env                              ← auto-created, auto-loaded by Application.boot()
 └── package.json
 ```
 
@@ -223,7 +230,9 @@ pnpm build
 pnpm test
 ```
 
-PRs are welcome. For major changes, please open an issue first to discuss what you'd like to change.
+PRs welcome. For larger changes, open an issue first so we can scope the direction. Releases run through Changesets — add a `.changeset/*.md` to your PR describing the user-facing change.
+
+See [CONTRIBUTING.md](./CONTRIBUTING.md) for the full workflow.
 
 ---
 

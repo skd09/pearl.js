@@ -71,7 +71,7 @@ app.register(AppServiceProvider)
 await app.boot()
 
 const router = new Router()
-router.get('/', (ctx) => ctx.response.json({ message: 'Hello from Pearl 🦪' }))
+router.get('/', (ctx) => ctx.response.json({ message: 'Hello from Pearl.js' }))
 
 await new HttpKernel().useRouter(router).listen(3000)
 ```

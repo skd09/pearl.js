@@ -50,7 +50,7 @@ export interface BuiltMail extends MailContent {
  *     build(): this {
  *       return this
  *         .sendTo(this.to)
- *         .subject('Welcome to Pearl!')
+ *         .subject('Welcome to Pearl.js!')
  *         .html(`<h1>Hi ${this.name}!</h1>`)
  *     }
  *   }
