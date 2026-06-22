@@ -55,7 +55,7 @@ await new HttpKernel().useRouter(router).listen(3000)
 
 **Conventions, not decisions.** Controllers, requests, jobs, listeners, mailables, migrations each have a home, and the CLI generates the boilerplate. No bikeshedding over folder structure, no architectural questions before you write the first route.
 
-**Production-ready, not POC.** Rate limiting, retry with backoff, dead-letter handling, structured `422`/`403` errors, algorithm-pinned JWT, prototype-pollution-safe job payloads, bounded-concurrency bulk mail. The stuff you would normally add after the first outage — already in.
+**Production-ready, not POC.** Rate limiting, retry with backoff, dead-letter handling, structured `422`/`403` errors, algorithm-pinned JWT, prototype-pollution-safe job payloads, bounded-concurrency bulk mail, SSRF-safe mail attachments, 1 MiB request-body cap, error messages that never leak framework internals. The stuff you would normally add after the first outage — already in.
 
 ---
 
