@@ -86,6 +86,22 @@ dispatcher.dispatchSync(new UserRegistered(user))
 
 ---
 
+## Handling listener errors
+
+`dispatch()` rejects when a listener throws — handle it like any await. `dispatchSync()` is fire-and-forget; by default it logs uncaught listener errors to `console.error`, which is invisible to APMs. Register an `onError` handler so Sentry / Datadog / etc. observe them:
+
+```typescript
+dispatcher.onError((err, event) => {
+  Sentry.captureException(err, { tags: { event: event.constructor.name } })
+})
+
+dispatcher.dispatchSync(new OrderPlaced(order))   // listener throw -> goes to Sentry
+```
+
+The handler-itself-throws path falls back to `console.error` — there's no risk of an error handler bringing the dispatcher down.
+
+---
+
 ## EventServiceProvider
 
 The recommended way to register all your event-listener mappings in one place:

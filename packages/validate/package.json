@@ -1,6 +1,6 @@
 {
   "name": "@pearl-framework/validate",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Pearl.js validation — Zod-powered FormRequest, validation pipes, and error formatting",
   "type": "module",
   "main": "./dist/index.js",

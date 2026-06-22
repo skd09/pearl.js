@@ -141,6 +141,70 @@ router.post('/users', createUser, [ValidationPipe(CreateUserRequest)])
 
 ---
 
+## Rate limiting
+
+Pearl ships a `RateLimit` middleware out of the box. Fixed-window per-key counter with `X-RateLimit-Limit` / `X-RateLimit-Remaining` / `X-RateLimit-Reset` headers, `Retry-After` on 429 responses, and a pluggable store.
+
+```typescript
+import { RateLimit } from '@pearl-framework/http'
+
+// Global — 100 requests per minute per IP
+router.use(new RateLimit({ windowMs: 60_000, max: 100 }))
+
+// Tight limit on auth routes
+router.post('/auth/login', loginHandler, [
+  new RateLimit({
+    windowMs: 15 * 60_000,
+    max:      5,
+    message:  'Too many login attempts. Try again in 15 minutes.',
+  }),
+])
+```
+
+### Custom keys
+
+Default key is the client IP from `socket.remoteAddress`. Override `keyGenerator` to rate-limit per user, per API key, etc.:
+
+```typescript
+new RateLimit({
+  windowMs: 60_000,
+  max:      30,
+  keyGenerator: (ctx) => {
+    const user = ctx.get<{ id: number }>('auth.user')
+    return user ? `u:${user.id}` : `ip:${ctx.request.nodeRequest.socket.remoteAddress}`
+  },
+})
+```
+
+### Behind a reverse proxy
+
+`RateLimit` **ignores `X-Forwarded-For` by default.** If you enable `trustProxy: true` on a server NOT behind a controlled proxy, clients can spoof the header and bypass the limit. Only set it when nginx / Cloudflare / ELB / etc. is overwriting the header on your behalf:
+
+```typescript
+new RateLimit({
+  windowMs: 60_000,
+  max:      100,
+  trustProxy: true,        // honors x-forwarded-for, first hop wins
+})
+```
+
+### Redis store for multi-process deployments
+
+The default `MemoryRateLimitStore` is process-local — fine for a single instance, not for horizontally scaled deployments where two processes should share counters. Implement the `RateLimitStore` contract against Redis (or whatever you're running):
+
+```typescript
+import type { RateLimitStore } from '@pearl-framework/http'
+
+const redisStore: RateLimitStore = {
+  async hit(key, windowMs) {
+    // INCR with TTL on first hit; return { count, resetAt }
+  },
+  async reset(key) { /* DEL key */ },
+}
+
+new RateLimit({ windowMs: 60_000, max: 100, store: redisStore })
+```
+
 ## Error handling
 
 Throw or return from your handler and Pearl's kernel will catch it:

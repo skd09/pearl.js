@@ -1,6 +1,6 @@
 {
   "name": "@pearl-framework/pearl",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Pearl.js — The TypeScript framework that does it right.",
   "type": "module",
   "main": "./dist/index.js",
@@ -57,5 +57,3 @@
     "README.md"
   ]
 }
-
-

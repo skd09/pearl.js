@@ -161,9 +161,18 @@ export class EventDispatcher {
         listener: AnyListener<T>,
         event: T,
     ): Promise<void> {
-        if (typeof listener === 'function') {
-        await (listener as ListenerFn<T>)(event)
-        return
+        // Both classes and plain functions are typeof === 'function' in JS, so
+        // typeof alone can't tell them apart — when a Listener subclass is
+        // registered, calling it directly throws "Class constructor cannot be
+        // invoked without 'new'". Discriminate by checking for the prototype's
+        // `handle` method (only Listener subclasses have it).
+        const isListenerClass =
+            typeof listener === 'function' &&
+            typeof (listener as ListenerConstructor<T>).prototype?.handle === 'function'
+
+        if (!isListenerClass) {
+            await (listener as ListenerFn<T>)(event)
+            return
         }
 
         const instance = new (listener as ListenerConstructor<T>)()

@@ -44,10 +44,40 @@ export class WelcomeEmail extends Mailable {
 ## Send Mail
 
 ```typescript
-const mailer = app.make(Mailer)
+const mailer = app.container.make(Mailer)
 
 await mailer.send(new WelcomeEmail(user))
-await mailer.sendBulk([new InvoiceEmail(u1), new InvoiceEmail(u2)])
+```
+
+## Bulk sending with bounded concurrency
+
+`sendBulk` runs many sends in parallel **with a concurrency cap** so a 1,000-mail blast doesn't open 1,000 SMTP connections at once. Default cap is 10. Override per call or set a `defaultBulkConcurrency` on the Mailer.
+
+```typescript
+// Default: cap at 10 in-flight, fail fast on first error
+await mailer.sendBulk(mailables)
+
+// Override concurrency for this call
+await mailer.sendBulk(mailables, { concurrency: 25 })
+
+// Don't abort on first error — collect failures and return them
+const result = await mailer.sendBulk(mailables, {
+  concurrency:     25,
+  continueOnError: true,
+})
+console.log(`Sent ${result.sent}, failed ${result.errors.length}`)
+result.errors.forEach(({ index, error }) =>
+  log.error({ index, err: error }, 'bulk send failure')
+)
+```
+
+The default cap is set on the Mailer:
+
+```typescript
+const mailer = new Mailer({
+  transport,
+  defaultBulkConcurrency: 25,
+})
 ```
 
 ---

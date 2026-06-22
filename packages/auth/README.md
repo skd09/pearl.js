@@ -1,8 +1,16 @@
 # @pearl-framework/auth
 
-> JWT authentication, password hashing, and route protection for Pearl.js.
+> JWT, session, and API-token authentication guards with password hashing and route protection for Pearl.js.
 
 [![npm](https://img.shields.io/npm/v/@pearl-framework/auth?color=a855f7&labelColor=111118&style=flat-square)](https://www.npmjs.com/package/@pearl-framework/auth)
+
+Three guard implementations, all behind a common `AuthGuard` contract:
+
+- **`JwtGuard`** — stateless Bearer tokens, algorithm-pinned, `none` algorithm blocked
+- **`SessionGuard`** — opaque session ids for cookie-based auth, rotation-on-use, `logoutAll`
+- **`ApiTokenGuard`** — long-lived API tokens with optional expiry, auto-revocation
+
+Plus `Authenticate` / `OptionalAuth` middleware, the `Hash` helper (bcrypt), and `AuthServiceProvider` for IoC wiring.
 
 ## Installation
 
@@ -121,6 +129,68 @@ router.post('/auth/login', async (ctx) => {
 
 ---
 
+## SessionGuard (cookie auth)
+
+Use `SessionGuard` when you want cookie-backed sessions instead of Bearer tokens. The guard issues an opaque, cryptographically random session id; pair it with your own `Set-Cookie` header to send it back to the client. Supports rotation-on-use and "log out everywhere."
+
+```typescript
+import { SessionGuard } from '@pearl-framework/auth'
+import type { SessionStore } from '@pearl-framework/auth'
+
+// Bring your own store — Redis, a DB table, etc.
+const store: SessionStore = {
+  async find(id)        { /* SELECT * FROM sessions WHERE id = ? */ },
+  async save(record)    { /* INSERT … ON CONFLICT UPDATE */ },
+  async destroy(id)     { /* DELETE FROM sessions WHERE id = ? */ },
+  async destroyAll(uid) { /* DELETE FROM sessions WHERE user_id = ? */ },
+}
+
+const sessions = new SessionGuard(userProvider, store, {
+  lifetimeSeconds: 60 * 60 * 2,   // default 2h
+  rotateOnUse:     true,          // issue a fresh id on every successful check
+})
+
+// Login
+router.post('/login', async (ctx) => {
+  const { email, password } = ctx.request.body as { email: string; password: string }
+  const id = await sessions.attempt(email, password)
+  if (!id) return ctx.response.unauthorized()
+  ctx.response.header('set-cookie', `sid=${id}; HttpOnly; Secure; SameSite=Lax`)
+  ctx.response.ok({ ok: true })
+})
+
+// Logout this session
+await sessions.logout(id)
+
+// Log out everywhere for this user
+await sessions.logoutAll(user)
+```
+
+Security notes:
+- IDs are 256 bits of entropy from `randomBytes(32)`.
+- The compare against the stored id uses `timingSafeEqual` to remove a side channel from in-process equality.
+- Expired sessions are destroyed automatically the first time they're accessed.
+
+## ApiTokenGuard (long-lived tokens)
+
+For programmatic access where Bearer JWTs don't fit. The guard generates 320-bit hex tokens, stores them via a `TokenStore` you provide, and auto-revokes on expiry.
+
+```typescript
+import { ApiTokenGuard } from '@pearl-framework/auth'
+
+const apiTokens = new ApiTokenGuard(userProvider, tokenStore)
+
+// Issue a token (optionally with expiry)
+const token = await apiTokens.issueToken(user, new Date(Date.now() + 30 * 86400_000))
+
+// Authenticate a request
+const user = await apiTokens.user(token)   // User | null
+
+// Revoke
+await apiTokens.revoke(token)
+await apiTokens.revokeAll(user)
+```
+
 ## Password Hashing
 
 ```typescript
@@ -179,9 +249,36 @@ app.register(AppAuthServiceProvider)
 | `refresh(token)` | Issue a new token for the owner of a valid existing token |
 | `decode(token)` | Decode a JWT payload without verifying the signature |
 
+### `SessionGuard`
+
+| Method | Description |
+|---|---|
+| `attempt(identifier, password)` | Verify credentials and issue a session id, or `null` |
+| `issueSession(user)` | Issue a session id for an already-authenticated user |
+| `user(token)` | Resolve the user behind a session id, `null` if expired/unknown |
+| `check(token)` | Alias for `user()` |
+| `logout(token)` | Destroy this single session |
+| `logoutAll(user)` | Destroy every session for this user |
+
+### `ApiTokenGuard`
+
+| Method | Description |
+|---|---|
+| `attempt(identifier, password)` | Verify credentials and issue an API token |
+| `issueToken(user, expiresAt?)` | Issue a token for an already-authenticated user |
+| `user(token)` | Resolve the user behind a token, auto-revokes if expired |
+| `check(token)` | Alias for `user()` |
+| `revoke(token)` | Revoke a single token |
+| `revokeAll(user)` | Revoke every token for this user |
+
 ### `Hash`
 
 | Method | Description |
 |---|---|
 | `Hash.make(password)` | Bcrypt-hash a plain-text password |
 | `Hash.check(password, hash)` | Verify a plain-text password against a bcrypt hash |
+
+## Related
+
+- [`@pearl-framework/validate`](https://www.npmjs.com/package/@pearl-framework/validate) — `FormRequest.authorize()` throws `AuthorizationException` when access checks fail, which pairs cleanly with these guards.
+- [`@pearl-framework/http`](https://www.npmjs.com/package/@pearl-framework/http) — the middleware pipeline that `Authenticate` plugs into.

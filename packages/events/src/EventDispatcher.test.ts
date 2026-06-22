@@ -1,12 +1,41 @@
 import { describe, it, expect, vi } from 'vitest'
 import { EventDispatcher } from './EventDispatcher.js'
 import { Event } from './events/Event.js'
+import { Listener } from './listeners/Listener.js'
 
 class TestEvent extends Event {
     constructor(public readonly payload: string) {
         super()
     }
 }
+
+describe('EventDispatcher class-listener invocation', () => {
+    it('invokes a Listener subclass with `new`, not as a function', async () => {
+        let calledWith: TestEvent | null = null
+
+        class MyListener extends Listener<TestEvent> {
+            async handle(event: TestEvent): Promise<void> {
+                calledWith = event
+            }
+        }
+
+        const d = new EventDispatcher()
+        d.on(TestEvent, MyListener)
+
+        const ev = new TestEvent('payload')
+        await d.dispatch(ev)
+
+        expect(calledWith).toBe(ev)
+    })
+
+    it('still works for plain function listeners', async () => {
+        const fn = vi.fn()
+        const d = new EventDispatcher()
+        d.on(TestEvent, fn)
+        await d.dispatch(new TestEvent('x'))
+        expect(fn).toHaveBeenCalledTimes(1)
+    })
+})
 
 describe('EventDispatcher.dispatchSync error handling', () => {
     it('routes uncaught listener errors through onError', async () => {

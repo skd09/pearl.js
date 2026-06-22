@@ -161,7 +161,32 @@ export class UpdatePostRequest extends FormRequest {
 }
 ```
 
-Returning `false` sends a `403 Forbidden` response before the handler runs.
+Returning `false` sends a `403 Forbidden` response **and throws a typed `AuthorizationException`**. This lets your global error-handler middleware distinguish authorization failures from validation failures cleanly:
+
+```typescript
+import { ValidationException, AuthorizationException } from '@pearl-framework/validate'
+
+// In your error-handler middleware:
+async function errorHandler(ctx, next) {
+  try {
+    await next()
+  } catch (err) {
+    if (err instanceof AuthorizationException) {
+      // Response is already 403'd; log and stop.
+      log.warn({ code: err.code }, 'auth failure')
+      return
+    }
+    if (err instanceof ValidationException) {
+      // Response is already 422'd with the structured errors body.
+      log.info({ errors: err.errors }, 'bad input')
+      return
+    }
+    throw err   // unknown — let the outer error boundary handle it
+  }
+}
+```
+
+Both `AuthorizationException` and `ValidationException` extend `PearlError` from `@pearl-framework/core`, so they each carry a `code` field (`AUTHORIZATION_FAILED` / `VALIDATION_FAILED`) for code-based dispatch.
 
 ---
 

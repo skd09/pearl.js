@@ -154,6 +154,53 @@ workers: [
 
 ---
 
+## Handling unknown jobs
+
+If a job arrives whose class isn't registered on the worker, the default behavior is to log to `console.error`. Pass an `onUnknownJob` hook to route it somewhere useful — APM, dead-letter queue, alerting:
+
+```typescript
+new QueueWorker('default', {
+  connection,
+  onUnknownJob: (name, data, error) => {
+    Sentry.captureException(error, { tags: { jobName: name }, extra: { data } })
+  },
+})
+```
+
+---
+
+## Retry and backoff helpers
+
+`retryWith` is a standalone helper for one-off async ops that aren't worth a full queue job — flaky HTTP calls to external APIs, eventual-consistency reads, etc. For BullMQ-managed retries on `Job` subclasses, override `jobOptions.backoff` instead; the queue handles re-enqueue itself.
+
+```typescript
+import {
+  retryWith,
+  fixedBackoff,
+  linearBackoff,
+  exponentialBackoff,
+} from '@pearl-framework/queue'
+
+const result = await retryWith(() => fetchExternalApi(url), {
+  attempts: 5,
+  backoff:  exponentialBackoff({ base: 500, maxDelay: 10_000, jitterPercent: 0.2 }),
+  shouldRetry: (err) => isTransient(err),                       // optional filter
+  onRetry:     (err, attempt, delay) => log.warn({ attempt, delay }, 'retry'),
+})
+```
+
+Backoff strategies:
+
+| Strategy | Behavior |
+|---|---|
+| `fixedBackoff(delay)` | Same delay between every attempt |
+| `linearBackoff(delay, maxDelay?)` | `delay * attempt`, capped |
+| `exponentialBackoff({ base, factor, maxDelay, jitterPercent })` | `base * factor^(attempt-1)`, capped, optional ±jitter to break thundering herds |
+
+`retryWith` throws the final error after the last attempt. With `attempts: 1` it's a no-retry passthrough.
+
+---
+
 ## API Reference
 
 ### `Job` (base class)
