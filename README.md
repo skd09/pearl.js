@@ -144,21 +144,21 @@ export class AuthController {
 
 ## Packages
 
-Pearl.js is a monorepo. Each package is independently installable, or pull the whole stack via the `@pearl-framework/pearl` meta-package.
+Pearl.js is a monorepo. Each package is independently installable from npm, or pull the whole stack via the `@pearl-framework/pearl` meta-package. Click any package name to view it on npm; the `src` link opens the source in this repo.
 
-| Package | Description |
-|---|---|
-| [`@pearl-framework/pearl`](./packages/pearl#readme) | Meta-package — re-exports every public API |
-| [`@pearl-framework/core`](./packages/core#readme) | Application bootstrap, IoC container, service providers, config, env |
-| [`@pearl-framework/http`](./packages/http#readme) | Router, kernel, request/response, middleware pipeline, rate limiting |
-| [`@pearl-framework/auth`](./packages/auth#readme) | JWT, session, and API token guards plus `Authenticate` middleware and bcrypt hashing |
-| [`@pearl-framework/database`](./packages/database#readme) | ORM-agnostic adapter pattern with Drizzle as the default |
-| [`@pearl-framework/validate`](./packages/validate#readme) | `FormRequest`, Zod-backed validation, typed validation/authorization exceptions |
-| [`@pearl-framework/events`](./packages/events#readme) | Type-safe event dispatcher and listener system |
-| [`@pearl-framework/queue`](./packages/queue#readme) | BullMQ queue, workers, retry/backoff utilities |
-| [`@pearl-framework/mail`](./packages/mail#readme) | `Mailable` classes, SMTP / SES / log / array transports, bulk send |
-| [`@pearl-framework/cli`](./packages/cli#readme) | `pearl` CLI — scaffold apps, generate files, run migrations |
-| [`@pearl-framework/testing`](./packages/testing#readme) | HTTP test client, mail fakes, factories, DB helpers |
+| Package | Description | Source |
+|---|---|---|
+| [`@pearl-framework/pearl`](https://www.npmjs.com/package/@pearl-framework/pearl) | Meta-package — re-exports every public API | [src](./packages/pearl#readme) |
+| [`@pearl-framework/core`](https://www.npmjs.com/package/@pearl-framework/core) | Application bootstrap, IoC container, service providers, config, env | [src](./packages/core#readme) |
+| [`@pearl-framework/http`](https://www.npmjs.com/package/@pearl-framework/http) | Router, kernel, request/response, middleware pipeline, rate limiting | [src](./packages/http#readme) |
+| [`@pearl-framework/auth`](https://www.npmjs.com/package/@pearl-framework/auth) | JWT, session, and API token guards plus `Authenticate` middleware and bcrypt hashing | [src](./packages/auth#readme) |
+| [`@pearl-framework/database`](https://www.npmjs.com/package/@pearl-framework/database) | ORM-agnostic adapter pattern with Drizzle as the default | [src](./packages/database#readme) |
+| [`@pearl-framework/validate`](https://www.npmjs.com/package/@pearl-framework/validate) | `FormRequest`, Zod-backed validation, typed validation/authorization exceptions | [src](./packages/validate#readme) |
+| [`@pearl-framework/events`](https://www.npmjs.com/package/@pearl-framework/events) | Type-safe event dispatcher and listener system | [src](./packages/events#readme) |
+| [`@pearl-framework/queue`](https://www.npmjs.com/package/@pearl-framework/queue) | BullMQ queue, workers, retry/backoff utilities | [src](./packages/queue#readme) |
+| [`@pearl-framework/mail`](https://www.npmjs.com/package/@pearl-framework/mail) | `Mailable` classes, SMTP / SES / log / array transports, bulk send | [src](./packages/mail#readme) |
+| [`@pearl-framework/cli`](https://www.npmjs.com/package/@pearl-framework/cli) | `pearl` CLI — scaffold apps, generate files, run migrations | [src](./packages/cli#readme) |
+| [`@pearl-framework/testing`](https://www.npmjs.com/package/@pearl-framework/testing) | HTTP test client, mail fakes, factories, DB helpers | [src](./packages/testing#readme) |
 
 ---
 
