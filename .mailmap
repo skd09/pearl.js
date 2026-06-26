@@ -1,0 +1,10 @@
+# Coalesce all commit identities under the maintainer so automated and
+# co-author entries (github-actions, Claude) do not appear as separate
+# contributors on GitHub. Format:
+#   Proper Name <proper@email>  Commit Name <commit@email>
+
+Sharvari Divekar <sharvaridivekar09@gmail.com> <sharvaridivekar09@gmail.com>
+Sharvari Divekar <sharvaridivekar09@gmail.com> Sharvari <sharvaridivekar09@gmail.com>
+Sharvari Divekar <sharvaridivekar09@gmail.com> Claude <noreply@anthropic.com>
+Sharvari Divekar <sharvaridivekar09@gmail.com> claude[bot] <claude[bot]@users.noreply.github.com>
+Sharvari Divekar <sharvaridivekar09@gmail.com> github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>
