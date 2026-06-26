@@ -49,7 +49,7 @@ const SECURITY_PRESETS: Record<Exclude<Preset, 'custom'>, SecurityModule[]> = {
 const PEARL_VERSION = '^1.1.0'
 
 const MODULE_DEPS: Record<Module, Record<string, string>> = {
-  http:     { '@pearl-framework/http': PEARL_VERSION, 'reflect-metadata': '^0.2.0' },
+  http:     { '@pearl-framework/http': PEARL_VERSION },
   auth:     { '@pearl-framework/auth': PEARL_VERSION },
   validate: { '@pearl-framework/validate': PEARL_VERSION, zod: '^3.23.0' },
   database: { '@pearl-framework/database': PEARL_VERSION },

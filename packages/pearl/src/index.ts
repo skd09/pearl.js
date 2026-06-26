@@ -31,12 +31,6 @@ export {
     Pipeline,
     RateLimit,
     MemoryRateLimitStore,
-    Controller,
-    Get,
-    Post,
-    Put,
-    Patch,
-    Delete,
 } from '@pearl-framework/http'
 export type {
     Route,
@@ -50,7 +44,6 @@ export type {
     RateLimitOptions,
     RateLimitStore,
     ParsedBody,
-    RouteDefinition,
     KernelOptions,
 } from '@pearl-framework/http'
 export { HttpServiceProvider } from '@pearl-framework/http'

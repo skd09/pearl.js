@@ -57,15 +57,26 @@ describe('SessionGuard', () => {
         expect(store.sessions.size).toBe(0)
     })
 
-    it('rotates session id when configured', async () => {
+    it('rotates session id when configured and hands back the new id', async () => {
         const user = new FakeUser(1)
         const store = new MemorySessionStore()
-        const guard = new SessionGuard(new FakeProvider(user), store, { rotateOnUse: true })
+        let rotatedTo: string | null = null
+        const guard = new SessionGuard(new FakeProvider(user), store, {
+            rotateOnUse: true,
+            onRotate: (newId) => { rotatedTo = newId },
+        })
         const id = (await guard.attempt('a', 'b'))!
 
-        await guard.user(id)
+        const found = await guard.user(id)
+        expect(found?.id).toBe(1)
+
+        // Old id is gone, exactly one session remains, and the caller received
+        // the replacement id (the bug: it used to be discarded).
         expect(store.sessions.has(id)).toBe(false)
         expect(store.sessions.size).toBe(1)
+        expect(rotatedTo).toBeTruthy()
+        expect(rotatedTo).not.toBe(id)
+        expect(store.sessions.has(rotatedTo!)).toBe(true)
     })
 
     it('logoutAll destroys every session for the user', async () => {

@@ -1,6 +1,6 @@
 {
   "name": "@pearl-framework/testing",
-  "version": "1.1.4",
+  "version": "1.2.0",
   "type": "module",
   "description": "Pearl.js testing — HTTP test client, database helpers, mail fakes, and test utilities",
   "main": "./dist/index.js",

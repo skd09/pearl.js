@@ -11,10 +11,13 @@ export abstract class FormRequest<TSchema extends ZodTypeAny = ZodTypeAny> {
     }
 
     protected resolveInput(ctx: HttpContext): Record<string, unknown> {
+        // Precedence, lowest to highest: body, then query, then route params.
+        // Route params win so a request body cannot overwrite a trusted path
+        // segment — e.g. a body of { id: 999 } cannot override /users/:id.
         return {
+            ...(ctx.request.body as Record<string, unknown>),
             ...ctx.request.query,
             ...ctx.request.params,
-            ...(ctx.request.body as Record<string, unknown>),
         }
     }
 

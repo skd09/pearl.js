@@ -1,6 +1,6 @@
 {
   "name": "@pearl-framework/database",
-  "version": "1.1.4",
+  "version": "1.2.0",
   "type": "module",
   "description": "Pearl.js — ORM-agnostic database layer. Supports Drizzle, Prisma, TypeORM, and raw drivers.",
   "main": "./dist/index.js",

@@ -10,11 +10,6 @@ export { Pipeline } from './routing/Pipeline.js'
 export type { Route, RouteMatch, RouteHandler, HttpMethod } from './routing/Router.js'
 export type { Middleware, MiddlewareFn, MiddlewareClass, NextFn } from './routing/Pipeline.js'
 
-// Decorators
-export { Controller } from './decorators/Controller.js'
-export { Get, Post, Put, Patch, Delete } from './decorators/Route.js'
-export type { RouteDefinition } from './decorators/Route.js'
-
 // Middleware
 export { RateLimit, MemoryRateLimitStore } from './middleware/RateLimit.js'
 export type { RateLimitOptions, RateLimitStore } from './middleware/RateLimit.js'

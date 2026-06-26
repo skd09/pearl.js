@@ -151,7 +151,7 @@ Pearl.js is a monorepo. Each package is independently installable from npm, or p
 | [`@pearl-framework/pearl`](https://www.npmjs.com/package/@pearl-framework/pearl) | Meta-package — re-exports every public API | [src](./packages/pearl#readme) |
 | [`@pearl-framework/core`](https://www.npmjs.com/package/@pearl-framework/core) | Application bootstrap, IoC container, service providers, config, env | [src](./packages/core#readme) |
 | [`@pearl-framework/http`](https://www.npmjs.com/package/@pearl-framework/http) | Router, kernel, request/response, middleware pipeline, rate limiting | [src](./packages/http#readme) |
-| [`@pearl-framework/auth`](https://www.npmjs.com/package/@pearl-framework/auth) | JWT, session, and API token guards plus `Authenticate` middleware and bcrypt hashing | [src](./packages/auth#readme) |
+| [`@pearl-framework/auth`](https://www.npmjs.com/package/@pearl-framework/auth) | JWT, session, and API token guards plus `Authenticate` middleware and scrypt hashing | [src](./packages/auth#readme) |
 | [`@pearl-framework/database`](https://www.npmjs.com/package/@pearl-framework/database) | ORM-agnostic adapter pattern with Drizzle as the default | [src](./packages/database#readme) |
 | [`@pearl-framework/validate`](https://www.npmjs.com/package/@pearl-framework/validate) | `FormRequest`, Zod-backed validation, typed validation/authorization exceptions | [src](./packages/validate#readme) |
 | [`@pearl-framework/events`](https://www.npmjs.com/package/@pearl-framework/events) | Type-safe event dispatcher and listener system | [src](./packages/events#readme) |

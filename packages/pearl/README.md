@@ -58,7 +58,7 @@ Everything below is available from a single `import { … } from '@pearl-framewo
 | From | Exports |
 |---|---|
 | **core** | `Application`, `Container`, `ServiceProvider`, `Config`, `env`, `loadDotenv`, `parseDotenv`, `PearlError`, `BindingNotFoundError`, `CircularDependencyError`, `ContainerFrozenError`, `ProviderBootError` |
-| **http** | `HttpKernel`, `Router`, `HttpContext`, `Request`, `Response`, `Pipeline`, `Controller`, `Get`/`Post`/`Put`/`Patch`/`Delete` decorators, `RateLimit`, `MemoryRateLimitStore` |
+| **http** | `HttpKernel`, `Router`, `HttpContext`, `Request`, `Response`, `Pipeline`, `RateLimit`, `MemoryRateLimitStore` |
 | **auth** | `AuthManager`, `JwtGuard`, `SessionGuard`, `ApiTokenGuard`, `Hash`, `Authenticate`, `OptionalAuth`, `AuthServiceProvider` |
 | **validate** | `FormRequest`, `ValidationException`, `AuthorizationException`, `ValidationPipe`, `validate`, `validateSync`, `rules`, `z` |
 | **events** | `Event`, `Listener`, `EventDispatcher` (with `onError` hook), `EventServiceProvider` |

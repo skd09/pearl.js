@@ -19,6 +19,13 @@ export interface SessionConfig {
     lifetimeSeconds?: number
     /** If true, a new session id is issued on every successful check (rotation). */
     rotateOnUse?: boolean
+    /**
+     * Called when a session id is rotated (only when `rotateOnUse` is true).
+     * Receives the freshly issued id and the old one so your cookie layer can
+     * re-issue the `Set-Cookie` header. Without this hook the rotated id would
+     * be lost and the user effectively logged out on their next request.
+     */
+    onRotate?: (newId: string, oldId: string) => void | Promise<void>
 }
 
 /**
@@ -31,6 +38,7 @@ export class SessionGuard<TUser extends AuthUser = AuthUser>
 {
     private readonly lifetimeMs: number
     private readonly rotateOnUse: boolean
+    private readonly onRotate?: (newId: string, oldId: string) => void | Promise<void>
 
     constructor(
         private readonly provider: UserProvider<TUser>,
@@ -39,6 +47,7 @@ export class SessionGuard<TUser extends AuthUser = AuthUser>
     ) {
         this.lifetimeMs = (config.lifetimeSeconds ?? 7200) * 1000
         this.rotateOnUse = config.rotateOnUse ?? false
+        if (config.onRotate) this.onRotate = config.onRotate
     }
 
     async attempt(identifier: string, password: string): Promise<string | null> {
@@ -81,8 +90,11 @@ export class SessionGuard<TUser extends AuthUser = AuthUser>
         if (!user) return null
 
         if (this.rotateOnUse) {
+            // Issue the replacement before destroying the old id, then hand the
+            // new id to the caller via onRotate so it can update the cookie.
+            const newId = await this.issueSession(user)
             await this.store.destroy(token)
-            await this.issueSession(user)
+            if (this.onRotate) await this.onRotate(newId, token)
         }
 
         return user

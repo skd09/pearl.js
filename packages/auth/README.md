@@ -10,12 +10,12 @@ Three guard implementations, all behind a common `AuthGuard` contract:
 - **`SessionGuard`** — opaque session ids for cookie-based auth, rotation-on-use, `logoutAll`
 - **`ApiTokenGuard`** — long-lived API tokens with optional expiry, auto-revocation
 
-Plus `Authenticate` / `OptionalAuth` middleware, the `Hash` helper (bcrypt), and `AuthServiceProvider` for IoC wiring.
+Plus `Authenticate` / `OptionalAuth` middleware, the `Hash` helper (scrypt, via Node's built-in `crypto`), and `AuthServiceProvider` for IoC wiring.
 
 ## Installation
 
 ```bash
-npm install @pearl-framework/auth @pearl-framework/core @pearl-framework/http jsonwebtoken bcryptjs
+npm install @pearl-framework/auth @pearl-framework/core @pearl-framework/http
 ```
 
 ---
@@ -196,7 +196,7 @@ await apiTokens.revokeAll(user)
 ```typescript
 import { Hash } from '@pearl-framework/auth'
 
-// Hash a plain-text password (bcrypt, cost factor 10)
+// Hash a plain-text password (scrypt — Node's built-in crypto)
 const hash = await Hash.make('my-password')
 
 // Verify a password against a stored hash
@@ -215,7 +215,8 @@ import { AuthServiceProvider } from '@pearl-framework/auth'
 
 export class AppAuthServiceProvider extends AuthServiceProvider {
   protected config = {
-    guard:  'jwt',
+    defaultGuard: 'jwt' as const,
+    userProvider: new DrizzleUserProvider(),
     jwt: {
       secret:    process.env.JWT_SECRET!,
       expiresIn: '7d',
@@ -230,7 +231,7 @@ app.register(AppAuthServiceProvider)
 
 ## Security Notes
 
-- **Algorithm pinning** — `jwt.verify()` is always called with an explicit `algorithms` allowlist. This prevents [algorithm confusion attacks](https://auth0.com/blog/critical-vulnerabilities-in-json-web-token-libraries/) where an attacker switches the token's algorithm to bypass verification.
+- **Algorithm pinning** — verification always enforces the single configured algorithm; the token's own `alg` header is never trusted. This prevents [algorithm confusion attacks](https://auth0.com/blog/critical-vulnerabilities-in-json-web-token-libraries/) where an attacker switches the token's algorithm to bypass verification.
 - **`none` algorithm blocked** — passing `algorithm: 'none'` throws at construction time with a clear error message.
 - **Secrets** — use a minimum of 32 random characters for `JWT_SECRET`. Use `openssl rand -base64 32` to generate one.
 - **API token lookup must be timing-safe.** `ApiTokenGuard` delegates token retrieval to the `TokenStore` you provide. Database-backed stores are typically fine — indexed lookups have negligible timing variance. **In-memory stores must use `crypto.timingSafeEqual`** when matching the supplied token against stored ones; a naive `===` or `Array.find(t => t.token === input)` is theoretically vulnerable to a side-channel attack. Pearl ships 320-bit tokens (`randomBytes(40).toString('hex')`), which makes the practical attack infeasible, but a timing-safe store closes the gap entirely.
@@ -276,8 +277,8 @@ app.register(AppAuthServiceProvider)
 
 | Method | Description |
 |---|---|
-| `Hash.make(password)` | Bcrypt-hash a plain-text password |
-| `Hash.check(password, hash)` | Verify a plain-text password against a bcrypt hash |
+| `Hash.make(password)` | scrypt-hash a plain-text password |
+| `Hash.check(password, hash)` | Verify a plain-text password against a scrypt hash |
 
 ## Related
 
